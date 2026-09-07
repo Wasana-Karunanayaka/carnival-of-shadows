@@ -17,3 +17,7 @@ cmake-build-*/
 # OS files
 Thumbs.db
 .DS_Store
+
+# Visual Studio generated
+Carnival.*/
+x64/
