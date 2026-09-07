@@ -4,7 +4,7 @@
  * Course: CSC3081 - Computer Graphics Programming
  *
  * Purpose:
- * Implements the 3D camera and its viewing direction.
+ * Implements camera movement and viewing direction.
  */
 
 #include "Camera.h"
@@ -16,12 +16,12 @@ const float PI = 3.14159265f;
 
 Camera::Camera()
 {
-    // Start slightly above the ground and away from the scene centre.
+    // Starting position can be changed later to place the player at the carnival entrance.
     x = 0.0f;
     y = 2.0f;
     z = 8.0f;
 
-    // -90 degrees makes the initial camera face toward negative Z.
+    // -90 degrees points the camera toward the negative Z direction.
     yaw = -90.0f;
     pitch = 0.0f;
 
@@ -38,7 +38,6 @@ void Camera::updateDirection()
     frontY = sinf(pitchRadians);
     frontZ = sinf(yawRadians) * cosf(pitchRadians);
 
-    // Normalize the direction vector.
     float length = sqrtf(frontX * frontX + frontY * frontY + frontZ * frontZ);
 
     if (length > 0.0f)
@@ -49,11 +48,46 @@ void Camera::updateDirection()
     }
 }
 
+void Camera::moveForward(float distance)
+{
+    // Move along the horizontal viewing direction so normal movement stays on the ground.
+    x += frontX * distance;
+    z += frontZ * distance;
+}
+
+void Camera::moveRight(float distance)
+{
+    // Right direction is perpendicular to the camera's horizontal forward direction.
+    float rightX = -frontZ;
+    float rightZ = frontX;
+
+    x += rightX * distance;
+    z += rightZ * distance;
+}
+
+void Camera::rotateYaw(float angle)
+{
+    yaw += angle;
+    updateDirection();
+}
+
+void Camera::rotatePitch(float angle)
+{
+    pitch += angle;
+
+    // Prevent the camera from flipping upside down.
+    if (pitch > 89.0f)
+        pitch = 89.0f;
+
+    if (pitch < -89.0f)
+        pitch = -89.0f;
+
+    updateDirection();
+}
+
 void Camera::applyView() const
 {
-    gluLookAt(
-        x, y, z,
+    gluLookAt(x, y, z,
         x + frontX, y + frontY, z + frontZ,
-        0.0f, 1.0f, 0.0f
-    );
+        0.0f, 1.0f, 0.0f);
 }

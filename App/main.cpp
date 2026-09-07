@@ -124,14 +124,48 @@ void reshape(int width, int height)
 
 void keyboard(unsigned char key, int x, int y)
 {
+    // Movement speed can be adjusted later if navigation feels too fast or slow.
+    const float moveSpeed = 0.4f;
+
+    if (key == 'w' || key == 'W')
+        camera.moveForward(moveSpeed);
+
+    if (key == 's' || key == 'S')
+        camera.moveForward(-moveSpeed);
+
+    if (key == 'a' || key == 'A')
+        camera.moveRight(-moveSpeed);
+
+    if (key == 'd' || key == 'D')
+        camera.moveRight(moveSpeed);
+
     // P switches between perspective and orthographic projection.
     if (key == 'p' || key == 'P')
     {
         usePerspective = !usePerspective;
-
-        // Rebuild the projection matrix using the current window size.
         reshape(windowWidth, windowHeight);
     }
+
+    glutPostRedisplay();
+}
+
+
+void specialKeyboard(int key, int x, int y)
+{
+    // Rotation speed controls how quickly the camera turns.
+    const float rotationSpeed = 4.0f;
+
+    if (key == GLUT_KEY_LEFT)
+        camera.rotateYaw(-rotationSpeed);
+
+    if (key == GLUT_KEY_RIGHT)
+        camera.rotateYaw(rotationSpeed);
+
+    if (key == GLUT_KEY_UP)
+        camera.rotatePitch(rotationSpeed);
+
+    if (key == GLUT_KEY_DOWN)
+        camera.rotatePitch(-rotationSpeed);
 
     glutPostRedisplay();
 }
@@ -159,6 +193,7 @@ int main(int argc, char** argv)
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutKeyboardFunc(keyboard);
+    glutSpecialFunc(specialKeyboard);
 
     glutMainLoop();
 
