@@ -852,6 +852,540 @@ void drawCircusTent()
 
 
 // -----------------------------------------------------------------------------
+// Funhouse spiral decoration
+// -----------------------------------------------------------------------------
+
+void drawSpiralDisc(float radius)
+{
+    const float pi = 3.14159265f;
+    const int segments = 48;
+
+    // Faded carnival disc.
+    glColor3f(0.68f, 0.57f, 0.28f);
+
+    glBegin(GL_TRIANGLE_FAN);
+
+    glVertex3f(0.0f, 0.0f, 0.0f);
+
+    for (int i = 0; i <= segments; i++)
+    {
+        float angle = 2.0f * pi * i / segments;
+
+        glVertex3f(radius * cosf(angle),
+            radius * sinf(angle),
+            0.0f);
+    }
+
+    glEnd();
+
+
+    // Dark spiral over the disc.
+    glLineWidth(5.0f);
+    glColor3f(0.08f, 0.055f, 0.045f);
+
+    glBegin(GL_LINE_STRIP);
+
+    const int spiralPoints = 70;
+
+    for (int i = 0; i < spiralPoints; i++)
+    {
+        float t = static_cast<float>(i) / (spiralPoints - 1);
+
+        // About two full turns.
+        float angle = t * 4.0f * pi;
+        float spiralRadius = radius * 0.08f + radius * 0.78f * t;
+
+        glVertex3f(spiralRadius * cosf(angle),
+            spiralRadius * sinf(angle),
+            0.03f);
+    }
+
+    glEnd();
+
+    glLineWidth(1.0f);
+}
+
+
+// -----------------------------------------------------------------------------
+// Funhouse bulb
+// -----------------------------------------------------------------------------
+
+void drawFunHouseBulb(float x, float y, float z)
+{
+    glPushMatrix();
+    glTranslatef(x, y, z);
+
+    glColor3f(0.82f, 0.68f, 0.30f);
+    Primitives::drawSphere(0.10f, 10, 10);
+
+    glPopMatrix();
+}
+
+
+// -----------------------------------------------------------------------------
+// Haunted funhouse
+// -----------------------------------------------------------------------------
+
+void drawHauntedFunHouse()
+{
+    // Building size.
+    const float houseWidth = 12.0f;
+    const float houseDepth = 14.0f;
+    const float wallHeight = 6.0f;
+
+    // Right side of the carnival.
+    glPushMatrix();
+    glTranslatef(26.0f, 0.0f, -12.5f);
+
+    // Front faces the side path.
+    glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
+
+
+    // -------------------------------------------------------------------------
+    // Interior floor
+    // -------------------------------------------------------------------------
+
+    glPushMatrix();
+    glTranslatef(0.0f, 0.04f, 0.0f);
+    glScalef(houseWidth, 0.08f, houseDepth);
+
+    glColor3f(0.10f, 0.075f, 0.055f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // -------------------------------------------------------------------------
+    // Side walls
+    // -------------------------------------------------------------------------
+
+    glPushMatrix();
+    glTranslatef(-houseWidth / 2.0f, wallHeight / 2.0f, 0.0f);
+    glScalef(0.25f, wallHeight, houseDepth);
+
+    glColor3f(0.085f, 0.075f, 0.075f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    glPushMatrix();
+    glTranslatef(houseWidth / 2.0f, wallHeight / 2.0f, 0.0f);
+    glScalef(0.25f, wallHeight, houseDepth);
+
+    glColor3f(0.085f, 0.075f, 0.075f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // -------------------------------------------------------------------------
+    // Back wall
+    // -------------------------------------------------------------------------
+
+    glPushMatrix();
+    glTranslatef(0.0f, wallHeight / 2.0f, -houseDepth / 2.0f);
+    glScalef(houseWidth, wallHeight, 0.25f);
+
+    glColor3f(0.075f, 0.065f, 0.07f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // -------------------------------------------------------------------------
+    // Front wall around the entrance
+    // -------------------------------------------------------------------------
+
+    // Left side of doorway.
+    glPushMatrix();
+    glTranslatef(-4.0f, wallHeight / 2.0f, houseDepth / 2.0f);
+    glScalef(4.0f, wallHeight, 0.28f);
+
+    glColor3f(0.10f, 0.08f, 0.075f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // Right side of doorway.
+    glPushMatrix();
+    glTranslatef(4.0f, wallHeight / 2.0f, houseDepth / 2.0f);
+    glScalef(4.0f, wallHeight, 0.28f);
+
+    glColor3f(0.10f, 0.08f, 0.075f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // Wall above doorway.
+    glPushMatrix();
+    glTranslatef(0.0f, 5.0f, houseDepth / 2.0f);
+    glScalef(4.0f, 2.0f, 0.28f);
+
+    glColor3f(0.095f, 0.075f, 0.07f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // -------------------------------------------------------------------------
+    // Roof
+    // -------------------------------------------------------------------------
+
+    glPushMatrix();
+    glTranslatef(-3.0f, 6.7f, 0.0f);
+    glRotatef(-14.0f, 0.0f, 0.0f, 1.0f);
+    glScalef(6.8f, 0.30f, 14.6f);
+
+    glColor3f(0.07f, 0.035f, 0.035f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    glPushMatrix();
+    glTranslatef(3.0f, 6.7f, 0.0f);
+    glRotatef(14.0f, 0.0f, 0.0f, 1.0f);
+    glScalef(6.8f, 0.30f, 14.6f);
+
+    glColor3f(0.065f, 0.03f, 0.03f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // -------------------------------------------------------------------------
+    // Interior partitions
+    // -------------------------------------------------------------------------
+
+    // Partial wall leaves space to walk around both sides.
+    glPushMatrix();
+    glTranslatef(-3.0f, 1.6f, -1.3f);
+    glScalef(0.22f, 3.2f, 5.0f);
+
+    glColor3f(0.11f, 0.085f, 0.075f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // Second hiding area deeper inside.
+    glPushMatrix();
+    glTranslatef(2.8f, 1.6f, -3.8f);
+    glScalef(0.22f, 3.2f, 4.0f);
+
+    glColor3f(0.10f, 0.075f, 0.07f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // -------------------------------------------------------------------------
+    // Gold side panels
+    // -------------------------------------------------------------------------
+
+    glColor3f(0.45f, 0.28f, 0.08f);
+
+    // Left wing.
+    glBegin(GL_QUADS);
+
+    glVertex3f(-8.0f, 0.5f, 7.30f);
+    glVertex3f(-2.5f, 0.5f, 7.30f);
+    glVertex3f(-2.8f, 5.1f, 7.30f);
+    glVertex3f(-7.2f, 4.2f, 7.30f);
+
+    glEnd();
+
+
+    // Right wing.
+    glBegin(GL_QUADS);
+
+    glVertex3f(2.5f, 0.5f, 7.30f);
+    glVertex3f(8.0f, 0.5f, 7.30f);
+    glVertex3f(7.2f, 4.2f, 7.30f);
+    glVertex3f(2.8f, 5.1f, 7.30f);
+
+    glEnd();
+
+
+    // -------------------------------------------------------------------------
+    // Clown cheeks
+    // -------------------------------------------------------------------------
+
+    glPushMatrix();
+    glTranslatef(-2.45f, 2.25f, 7.55f);
+    glRotatef(-5.0f, 0.0f, 0.0f, 1.0f);
+    glScalef(1.35f, 4.2f, 0.45f);
+
+    glColor3f(0.39f, 0.30f, 0.22f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    glPushMatrix();
+    glTranslatef(2.45f, 2.25f, 7.55f);
+    glRotatef(5.0f, 0.0f, 0.0f, 1.0f);
+    glScalef(1.35f, 4.2f, 0.45f);
+
+    glColor3f(0.39f, 0.30f, 0.22f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // -------------------------------------------------------------------------
+    // Clown head
+    // -------------------------------------------------------------------------
+
+    glPushMatrix();
+    glTranslatef(0.0f, 6.0f, 7.45f);
+    glScalef(3.4f, 2.5f, 0.65f);
+
+    glColor3f(0.43f, 0.39f, 0.33f);
+    Primitives::drawSphere(1.0f, 24, 20);
+
+    glPopMatrix();
+
+
+    // -------------------------------------------------------------------------
+    // Spiral decorations
+    // -------------------------------------------------------------------------
+
+    glPushMatrix();
+    glTranslatef(-4.5f, 6.5f, 7.55f);
+    glRotatef(-8.0f, 0.0f, 0.0f, 1.0f);
+
+    drawSpiralDisc(1.65f);
+
+    glPopMatrix();
+
+
+    glPushMatrix();
+    glTranslatef(4.5f, 6.5f, 7.55f);
+    glRotatef(8.0f, 0.0f, 0.0f, 1.0f);
+
+    drawSpiralDisc(1.65f);
+
+    glPopMatrix();
+
+
+    // -------------------------------------------------------------------------
+    // Eye sockets
+    // -------------------------------------------------------------------------
+
+    glPushMatrix();
+    glTranslatef(-1.25f, 6.15f, 8.05f);
+    glRotatef(-12.0f, 0.0f, 0.0f, 1.0f);
+    glScalef(0.85f, 0.55f, 0.25f);
+
+    glColor3f(0.015f, 0.01f, 0.012f);
+    Primitives::drawSphere(1.0f, 18, 14);
+
+    glPopMatrix();
+
+
+    glPushMatrix();
+    glTranslatef(1.25f, 6.15f, 8.05f);
+    glRotatef(12.0f, 0.0f, 0.0f, 1.0f);
+    glScalef(0.85f, 0.55f, 0.25f);
+
+    glColor3f(0.015f, 0.01f, 0.012f);
+    Primitives::drawSphere(1.0f, 18, 14);
+
+    glPopMatrix();
+
+
+    // Red eyes.
+    glPushMatrix();
+    glTranslatef(-1.15f, 6.05f, 8.28f);
+    glScalef(0.30f, 0.18f, 0.12f);
+
+    glColor3f(0.65f, 0.02f, 0.015f);
+    Primitives::drawSphere(1.0f, 12, 10);
+
+    glPopMatrix();
+
+
+    glPushMatrix();
+    glTranslatef(1.15f, 6.05f, 8.28f);
+    glScalef(0.30f, 0.18f, 0.12f);
+
+    glColor3f(0.65f, 0.02f, 0.015f);
+    Primitives::drawSphere(1.0f, 12, 10);
+
+    glPopMatrix();
+
+
+    // -------------------------------------------------------------------------
+    // Red clown nose
+    // -------------------------------------------------------------------------
+
+    glPushMatrix();
+    glTranslatef(0.0f, 5.25f, 8.35f);
+
+    glColor3f(0.68f, 0.035f, 0.025f);
+    Primitives::drawSphere(0.62f, 18, 16);
+
+    glPopMatrix();
+
+
+    // Small lower nose pieces.
+    glPushMatrix();
+    glTranslatef(-0.38f, 4.95f, 8.25f);
+
+    glColor3f(0.50f, 0.025f, 0.02f);
+    Primitives::drawSphere(0.25f, 12, 10);
+
+    glPopMatrix();
+
+
+    glPushMatrix();
+    glTranslatef(0.38f, 4.95f, 8.25f);
+
+    glColor3f(0.50f, 0.025f, 0.02f);
+    Primitives::drawSphere(0.25f, 12, 10);
+
+    glPopMatrix();
+
+
+    // -------------------------------------------------------------------------
+    // Mouth entrance
+    // -------------------------------------------------------------------------
+
+    // Upper lip.
+    glPushMatrix();
+    glTranslatef(0.0f, 4.15f, 7.85f);
+    glRotatef(-2.0f, 0.0f, 0.0f, 1.0f);
+    glScalef(4.1f, 0.35f, 0.40f);
+
+    glColor3f(0.16f, 0.06f, 0.045f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // Mouth side frames.
+    glPushMatrix();
+    glTranslatef(-2.0f, 2.0f, 7.85f);
+    glRotatef(-5.0f, 0.0f, 0.0f, 1.0f);
+    glScalef(0.38f, 4.0f, 0.42f);
+
+    glColor3f(0.19f, 0.07f, 0.05f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    glPushMatrix();
+    glTranslatef(2.0f, 2.0f, 7.85f);
+    glRotatef(5.0f, 0.0f, 0.0f, 1.0f);
+    glScalef(0.38f, 4.0f, 0.42f);
+
+    glColor3f(0.19f, 0.07f, 0.05f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // -------------------------------------------------------------------------
+    // Upper teeth
+    // -------------------------------------------------------------------------
+
+    for (int i = -2; i <= 2; i++)
+    {
+        glPushMatrix();
+        glTranslatef(i * 0.65f, 3.95f, 8.08f);
+
+        // Teeth point downward.
+        glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
+
+        glColor3f(0.70f, 0.65f, 0.50f);
+        Primitives::drawCone(0.16f, 0.55f, 8);
+
+        glPopMatrix();
+    }
+
+
+    // -------------------------------------------------------------------------
+    // Lower teeth
+    // -------------------------------------------------------------------------
+
+    for (int i = -2; i <= 2; i++)
+    {
+        glPushMatrix();
+        glTranslatef(i * 0.65f, 0.12f, 8.08f);
+
+        glColor3f(0.62f, 0.57f, 0.45f);
+        Primitives::drawCone(0.14f, 0.45f, 8);
+
+        glPopMatrix();
+    }
+
+
+    // -------------------------------------------------------------------------
+    // Carnival bulbs
+    // -------------------------------------------------------------------------
+
+    for (int i = 0; i < 7; i++)
+    {
+        float x = -7.1f + i * 0.70f;
+        float y = 1.0f + i * 0.42f;
+
+        drawFunHouseBulb(x, y, 7.50f);
+    }
+
+
+    for (int i = 0; i < 7; i++)
+    {
+        float x = 7.1f - i * 0.70f;
+        float y = 1.0f + i * 0.42f;
+
+        drawFunHouseBulb(x, y, 7.50f);
+    }
+
+
+    // Bulbs around the mouth.
+    for (int i = -2; i <= 2; i++)
+        drawFunHouseBulb(i * 0.75f, 4.45f, 8.10f);
+
+
+    // -------------------------------------------------------------------------
+    // Funhouse sign
+    // -------------------------------------------------------------------------
+
+    glPushMatrix();
+    glTranslatef(0.0f, 8.45f, 7.55f);
+    glRotatef(-2.0f, 0.0f, 0.0f, 1.0f);
+    glScalef(4.2f, 0.75f, 0.30f);
+
+    glColor3f(0.22f, 0.07f, 0.045f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // Sign supports.
+    for (int i = -1; i <= 1; i++)
+    {
+        glPushMatrix();
+        glTranslatef(i * 1.3f, 7.55f, 7.40f);
+        glScalef(0.13f, 1.8f, 0.13f);
+
+        glColor3f(0.13f, 0.055f, 0.03f);
+        Primitives::drawCube(1.0f);
+
+        glPopMatrix();
+    }
+
+
+    glPopMatrix();
+}
+
+
+// -----------------------------------------------------------------------------
 // Initialization
 // -----------------------------------------------------------------------------
 
@@ -886,6 +1420,7 @@ void display()
     drawEntranceGate();
     drawCarnivalSign();
     drawCircusTent();
+    drawHauntedFunHouse();
 
     // Swap the completed back buffer to the screen.
     glutSwapBuffers();
