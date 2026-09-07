@@ -18,6 +18,8 @@
 #include "../Lib/Primitives.h"
 #include "Camera.h"
 
+#include <cmath>
+
 
 
  // -----------------------------------------------------------------------------
@@ -548,6 +550,308 @@ void drawCarnivalFence()
 
 
 // -----------------------------------------------------------------------------
+// Haunted circus tent
+// -----------------------------------------------------------------------------
+
+void drawCircusTent()
+{
+    const float pi = 3.14159265f;
+
+    // Tent size.
+    const float radius = 4.2f;
+    const float wallHeight = 3.2f;
+    const float roofPeak = 7.0f;
+    const int segments = 16;
+
+    // Left side of the carnival. Entrance faces the side path.
+    glPushMatrix();
+    glTranslatef(-26.0f, 0.0f, -12.5f);
+
+
+    // -------------------------------------------------------------------------
+    // Tent walls
+    // -------------------------------------------------------------------------
+
+    for (int i = 0; i < segments; i++)
+    {
+        // Leave two panels open on the +X side for the entrance.
+        if (i == 0 || i == segments - 1)
+            continue;
+
+        float angle1 = 2.0f * pi * i / segments;
+        float angle2 = 2.0f * pi * (i + 1) / segments;
+        float middleAngle = (angle1 + angle2) * 0.5f;
+
+        float x1 = radius * cosf(angle1);
+        float z1 = radius * sinf(angle1);
+        float x2 = radius * cosf(angle2);
+        float z2 = radius * sinf(angle2);
+
+        // Alternate the cloth panels.
+        if (i % 2 == 0)
+            glColor3f(0.46f, 0.055f, 0.04f);
+        else
+            glColor3f(0.48f, 0.40f, 0.29f);
+
+        glBegin(GL_QUADS);
+
+        glNormal3f(cosf(middleAngle), 0.0f, sinf(middleAngle));
+
+        glVertex3f(x1, 0.0f, z1);
+        glVertex3f(x2, 0.0f, z2);
+        glVertex3f(x2, wallHeight, z2);
+        glVertex3f(x1, wallHeight, z1);
+
+        glEnd();
+    }
+
+
+    // -------------------------------------------------------------------------
+    // Striped roof
+    // -------------------------------------------------------------------------
+
+    float roofHeight = roofPeak - wallHeight;
+    float normalLength = sqrtf(roofHeight * roofHeight + radius * radius);
+
+    for (int i = 0; i < segments; i++)
+    {
+        float angle1 = 2.0f * pi * i / segments;
+        float angle2 = 2.0f * pi * (i + 1) / segments;
+        float middleAngle = (angle1 + angle2) * 0.5f;
+
+        float x1 = radius * cosf(angle1);
+        float z1 = radius * sinf(angle1);
+        float x2 = radius * cosf(angle2);
+        float z2 = radius * sinf(angle2);
+
+        if (i % 2 == 0)
+            glColor3f(0.55f, 0.055f, 0.04f);
+        else
+            glColor3f(0.58f, 0.48f, 0.33f);
+
+        float normalX = cosf(middleAngle) * roofHeight / normalLength;
+        float normalY = radius / normalLength;
+        float normalZ = sinf(middleAngle) * roofHeight / normalLength;
+
+        glBegin(GL_TRIANGLES);
+
+        glNormal3f(normalX, normalY, normalZ);
+
+        glVertex3f(x1, wallHeight, z1);
+        glVertex3f(x2, wallHeight, z2);
+        glVertex3f(0.0f, roofPeak, 0.0f);
+
+        glEnd();
+    }
+
+
+    // -------------------------------------------------------------------------
+    // Bottom cloth trim
+    // -------------------------------------------------------------------------
+
+    for (int i = 0; i < segments; i++)
+    {
+        float angle = 2.0f * pi * i / segments;
+
+        float x = radius * cosf(angle);
+        float z = radius * sinf(angle);
+
+        glPushMatrix();
+        glTranslatef(x, 0.18f, z);
+        glRotatef(-angle * 180.0f / pi, 0.0f, 1.0f, 0.0f);
+        glScalef(1.55f, 0.28f, 0.14f);
+
+        glColor3f(0.19f, 0.025f, 0.02f);
+        Primitives::drawCube(1.0f);
+
+        glPopMatrix();
+    }
+
+
+    // -------------------------------------------------------------------------
+    // Entrance poles
+    // -------------------------------------------------------------------------
+
+    glPushMatrix();
+    glTranslatef(3.75f, 0.0f, -1.3f);
+
+    glColor3f(0.12f, 0.045f, 0.025f);
+    Primitives::drawCylinder(0.12f, 3.5f, 12);
+
+    glPopMatrix();
+
+
+    glPushMatrix();
+    glTranslatef(3.75f, 0.0f, 1.3f);
+
+    glColor3f(0.12f, 0.045f, 0.025f);
+    Primitives::drawCylinder(0.12f, 3.5f, 12);
+
+    glPopMatrix();
+
+
+    // Entrance cross beam.
+    glPushMatrix();
+    glTranslatef(3.78f, 3.35f, 0.0f);
+    glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+    glScalef(2.8f, 0.18f, 0.18f);
+
+    glColor3f(0.15f, 0.045f, 0.025f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // -------------------------------------------------------------------------
+    // Crooked entrance flaps
+    // -------------------------------------------------------------------------
+
+    glPushMatrix();
+    glTranslatef(4.05f, 2.0f, -1.45f);
+    glRotatef(-8.0f, 1.0f, 0.0f, 0.0f);
+    glRotatef(-7.0f, 0.0f, 0.0f, 1.0f);
+    glScalef(0.18f, 2.6f, 1.35f);
+
+    glColor3f(0.36f, 0.035f, 0.025f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    glPushMatrix();
+    glTranslatef(4.05f, 1.85f, 1.45f);
+    glRotatef(10.0f, 1.0f, 0.0f, 0.0f);
+    glRotatef(6.0f, 0.0f, 0.0f, 1.0f);
+    glScalef(0.18f, 2.35f, 1.25f);
+
+    glColor3f(0.30f, 0.03f, 0.025f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // -------------------------------------------------------------------------
+    // Entrance awning
+    // -------------------------------------------------------------------------
+
+    glPushMatrix();
+    glTranslatef(4.15f, 3.45f, 0.0f);
+    glRotatef(-8.0f, 0.0f, 0.0f, 1.0f);
+    glScalef(1.4f, 0.18f, 3.2f);
+
+    glColor3f(0.43f, 0.045f, 0.035f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // -------------------------------------------------------------------------
+    // Centre mast and roof ornament
+    // -------------------------------------------------------------------------
+
+    glPushMatrix();
+    glTranslatef(0.0f, roofPeak, 0.0f);
+
+    glColor3f(0.13f, 0.04f, 0.025f);
+    Primitives::drawCylinder(0.10f, 1.3f, 12);
+
+    glPopMatrix();
+
+
+    glPushMatrix();
+    glTranslatef(0.0f, roofPeak + 1.3f, 0.0f);
+
+    glColor3f(0.42f, 0.07f, 0.045f);
+    Primitives::drawSphere(0.20f, 12, 12);
+
+    glPopMatrix();
+
+
+    // -------------------------------------------------------------------------
+    // Torn top flag
+    // -------------------------------------------------------------------------
+
+    glPushMatrix();
+    glTranslatef(0.05f, roofPeak + 1.05f, 0.0f);
+
+    glColor3f(0.48f, 0.045f, 0.035f);
+
+    glBegin(GL_TRIANGLES);
+
+    glVertex3f(0.0f, 0.0f, 0.0f);
+    glVertex3f(1.5f, -0.18f, 0.0f);
+    glVertex3f(0.0f, -0.65f, 0.0f);
+
+    glVertex3f(0.65f, -0.30f, 0.0f);
+    glVertex3f(1.5f, -0.18f, 0.0f);
+    glVertex3f(1.0f, -0.48f, 0.0f);
+
+    glEnd();
+
+    glPopMatrix();
+
+
+    // -------------------------------------------------------------------------
+    // Guy ropes
+    // -------------------------------------------------------------------------
+
+    glLineWidth(2.0f);
+    glColor3f(0.20f, 0.18f, 0.14f);
+
+    glBegin(GL_LINES);
+
+    glVertex3f(-3.0f, wallHeight, -3.0f);
+    glVertex3f(-6.0f, 0.15f, -6.0f);
+
+    glVertex3f(-3.0f, wallHeight, 3.0f);
+    glVertex3f(-6.0f, 0.15f, 6.0f);
+
+    glVertex3f(3.0f, wallHeight, -3.0f);
+    glVertex3f(6.0f, 0.15f, -6.0f);
+
+    glVertex3f(3.0f, wallHeight, 3.0f);
+    glVertex3f(6.0f, 0.15f, 6.0f);
+
+    glEnd();
+
+
+    // -------------------------------------------------------------------------
+    // Rope stakes
+    // -------------------------------------------------------------------------
+
+    const float stakePositions[4][2] =
+    {
+        {-6.0f, -6.0f},
+        {-6.0f,  6.0f},
+        { 6.0f, -6.0f},
+        { 6.0f,  6.0f}
+    };
+
+    for (int i = 0; i < 4; i++)
+    {
+        glPushMatrix();
+        glTranslatef(stakePositions[i][0], 0.0f, stakePositions[i][1]);
+
+        glColor3f(0.13f, 0.055f, 0.025f);
+        Primitives::drawCylinder(0.08f, 0.65f, 8);
+
+        glPushMatrix();
+        glTranslatef(0.0f, 0.65f, 0.0f);
+
+        glColor3f(0.22f, 0.06f, 0.035f);
+        Primitives::drawCone(0.12f, 0.28f, 8);
+
+        glPopMatrix();
+
+        glPopMatrix();
+    }
+
+
+    glPopMatrix();
+}
+
+
+// -----------------------------------------------------------------------------
 // Initialization
 // -----------------------------------------------------------------------------
 
@@ -581,6 +885,7 @@ void display()
     drawCarnivalFence();
     drawEntranceGate();
     drawCarnivalSign();
+    drawCircusTent();
 
     // Swap the completed back buffer to the screen.
     glutSwapBuffers();
