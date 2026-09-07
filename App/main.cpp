@@ -15,7 +15,9 @@
 
 #include <GL/glut.h>
 
+#include "../Lib/Primitives.h"
 #include "Camera.h"
+
 
 
  // -----------------------------------------------------------------------------
@@ -256,6 +258,103 @@ void drawNightSky()
 
 
 // -----------------------------------------------------------------------------
+// Haunted carnival sign
+// -----------------------------------------------------------------------------
+
+void drawCarnivalSign()
+{
+    // Whole sign position near the entrance.
+    glPushMatrix();
+    glTranslatef(-5.0f, 0.0f, 5.0f);
+    glRotatef(8.0f, 0.0f, 1.0f, 0.0f);
+
+
+    // Uneven stone base.
+    glPushMatrix();
+    glTranslatef(0.0f, 0.18f, 0.0f);
+    glRotatef(-3.0f, 0.0f, 0.0f, 1.0f);
+    glScalef(1.5f, 0.35f, 1.0f);
+
+    glColor3f(0.18f, 0.18f, 0.20f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // Main wooden post.
+    glPushMatrix();
+    glTranslatef(0.0f, 0.35f, 0.0f);
+    glRotatef(-4.0f, 0.0f, 0.0f, 1.0f);
+
+    glColor3f(0.18f, 0.07f, 0.03f);
+    Primitives::drawCylinder(0.14f, 3.2f, 12);
+
+
+    // Main sign board.
+    glPushMatrix();
+    glTranslatef(0.0f, 2.45f, 0.0f);
+    glRotatef(-8.0f, 0.0f, 0.0f, 1.0f);
+    glScalef(2.9f, 0.75f, 0.22f);
+
+    glColor3f(0.30f, 0.07f, 0.05f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // Broken upper plank.
+    glPushMatrix();
+    glTranslatef(-0.25f, 2.95f, 0.0f);
+    glRotatef(12.0f, 0.0f, 0.0f, 1.0f);
+    glScalef(1.8f, 0.30f, 0.18f);
+
+    glColor3f(0.24f, 0.06f, 0.04f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // Small broken side piece.
+    glPushMatrix();
+    glTranslatef(1.35f, 2.25f, 0.0f);
+    glRotatef(-25.0f, 0.0f, 0.0f, 1.0f);
+    glScalef(0.7f, 0.22f, 0.16f);
+
+    glColor3f(0.20f, 0.05f, 0.03f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // Pointed ornament on top.
+    glPushMatrix();
+    glTranslatef(0.0f, 3.55f, 0.0f);
+
+    glColor3f(0.35f, 0.08f, 0.06f);
+    Primitives::drawCone(0.22f, 0.55f, 12);
+
+    glPopMatrix();
+
+
+    // Hanging cross piece.
+    glPushMatrix();
+    glTranslatef(-1.1f, 2.15f, 0.0f);
+    glRotatef(6.0f, 0.0f, 0.0f, 1.0f);
+    glScalef(0.12f, 0.9f, 0.12f);
+
+    glColor3f(0.12f, 0.05f, 0.03f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    glPopMatrix();
+
+    glPopMatrix();
+}
+
+
+// -----------------------------------------------------------------------------
 // Initialization
 // -----------------------------------------------------------------------------
 
@@ -285,6 +384,7 @@ void display()
 
     drawNightSky();
     drawGround();
+	drawCarnivalSign();
 
     // Swap the completed back buffer to the screen.
     glutSwapBuffers();

@@ -18,7 +18,7 @@ Camera::Camera()
 {
     // Starting position near the carnival entrance.
     x = 0.0f;
-    y = 2.0f;
+    y = 5.0f;
     z = 8.0f;
 
     // -90 degrees makes the initial camera face toward negative Z.
