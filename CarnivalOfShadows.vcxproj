@@ -19,12 +19,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="App\Camera.cpp" />
     <ClCompile Include="App\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Lib\Lib.vcxproj">
       <Project>{c5bc8a4a-a8b2-466b-9957-48b0c68d1cb9}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="App\Camera.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>

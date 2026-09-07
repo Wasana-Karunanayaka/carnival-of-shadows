@@ -21,6 +21,8 @@
 #include "../Lib/Mesh.h"
 #include "../Lib/MeshRenderer.h"
 
+#include "Camera.h"
+
 
  // -----------------------------------------------------------------------------
  // Application objects
@@ -28,6 +30,7 @@
 
 Mesh testCube;
 MeshRenderer meshRenderer;
+Camera camera;
 
 
 // -----------------------------------------------------------------------------
@@ -66,20 +69,10 @@ void display()
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    // Temporary camera.
-    // A dedicated camera system will be added later.
-    gluLookAt(
-        0.0, 2.0, 6.0,   // camera position
-        0.0, 0.0, 0.0,   // point being viewed
-        0.0, 1.0, 0.0    // upward direction
-    );
+    // Apply the reusable camera view.
+    camera.applyView();
 
-    glColor3f(
-        0.7f,
-        0.7f,
-        0.8f
-    );
-
+    glColor3f(0.7f, 0.7f, 0.8f);
     meshRenderer.renderWireframe(testCube);
 
     glutSwapBuffers();
