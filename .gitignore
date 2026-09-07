@@ -1,0 +1,19 @@
+# CMake / build output
+out/
+build/
+cmake-build-*/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Compiled files
+*.exe
+*.obj
+*.pdb
+*.ilk
+
+# OS files
+Thumbs.db
+.DS_Store
