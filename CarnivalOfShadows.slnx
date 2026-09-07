@@ -1,0 +1,8 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="CarnivalOfShadows.vcxproj" Id="4958ff4f-9305-4beb-9ac1-ca9f6de07ba0" />
+  <Project Path="Lib/Lib.vcxproj" Id="c5bc8a4a-a8b2-466b-9957-48b0c68d1cb9" />
+</Solution>
