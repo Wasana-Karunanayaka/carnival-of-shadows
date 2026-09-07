@@ -9,15 +9,12 @@
  * Responsible for:
  * - creating the GLUT window
  * - configuring camera and projection
- * - handling the application render loop
- * - handling application-level input
- * - using reusable objects from Lib
+ * - handling keyboard input
+ * - drawing the carnival environment
  */
 
 #include <GL/glut.h>
 
-#include "../Lib/Mesh.h"
-#include "../Lib/MeshRenderer.h"
 #include "Camera.h"
 
 
@@ -25,16 +22,237 @@
  // Application state
  // -----------------------------------------------------------------------------
 
-Mesh testCube;
-MeshRenderer meshRenderer;
 Camera camera;
 
-// Determines which projection is currently used.
+// true = perspective projection, false = orthographic projection.
 bool usePerspective = true;
 
-// Stored so the projection can be recalculated when P is pressed.
+// Initial application window size.
 int windowWidth = 800;
 int windowHeight = 600;
+
+
+// -----------------------------------------------------------------------------
+// Ground and carnival paths
+// -----------------------------------------------------------------------------
+
+void drawGround()
+{
+    // Increase this value if the carnival needs more usable land.
+    const float groundSize = 40.0f;
+
+    // Dark grass/soil colour. This can later be replaced with a ground texture.
+    glColor3f(0.07f, 0.08f, 0.07f);
+
+    glBegin(GL_QUADS);
+
+    glVertex3f(-groundSize, 0.0f, -groundSize);
+    glVertex3f(groundSize, 0.0f, -groundSize);
+    glVertex3f(groundSize, 0.0f, groundSize);
+    glVertex3f(-groundSize, 0.0f, groundSize);
+
+    glEnd();
+
+
+    // Slightly raised above the ground to prevent overlapping surfaces flickering.
+    const float pathY = 0.01f;
+
+    glColor3f(0.17f, 0.15f, 0.13f);
+
+    glBegin(GL_QUADS);
+
+    // Main entrance path.
+    // Change +/-2.5 to make the path wider or narrower.
+    glVertex3f(-2.5f, pathY, 12.0f);
+    glVertex3f(2.5f, pathY, 12.0f);
+    glVertex3f(2.5f, pathY, -5.0f);
+    glVertex3f(-2.5f, pathY, -5.0f);
+
+
+    // Central carnival plaza.
+    // This area gives enough space for visitors to move between attractions.
+    glVertex3f(-12.0f, pathY, -5.0f);
+    glVertex3f(12.0f, pathY, -5.0f);
+    glVertex3f(12.0f, pathY, -20.0f);
+    glVertex3f(-12.0f, pathY, -20.0f);
+
+
+    // Left branch leading toward the circus tent area.
+    glVertex3f(-22.0f, pathY, -10.0f);
+    glVertex3f(-12.0f, pathY, -10.0f);
+    glVertex3f(-12.0f, pathY, -15.0f);
+    glVertex3f(-22.0f, pathY, -15.0f);
+
+
+    // Right branch leading toward the haunted house area.
+    glVertex3f(12.0f, pathY, -10.0f);
+    glVertex3f(22.0f, pathY, -10.0f);
+    glVertex3f(22.0f, pathY, -15.0f);
+    glVertex3f(12.0f, pathY, -15.0f);
+
+
+    // Rear path leading deeper into the carnival.
+    glVertex3f(-3.0f, pathY, -20.0f);
+    glVertex3f(3.0f, pathY, -20.0f);
+    glVertex3f(3.0f, pathY, -34.0f);
+    glVertex3f(-3.0f, pathY, -34.0f);
+
+    glEnd();
+}
+
+
+// -----------------------------------------------------------------------------
+// Night sky
+// -----------------------------------------------------------------------------
+
+void drawNightSky()
+{
+    // Increase skySize if the sky walls become visible while moving around.
+    const float skySize = 45.0f;
+
+    // Controls how high the night sky extends above the carnival.
+    const float skyHeight = 30.0f;
+
+    // Keep the sky centered around the camera while the player moves.
+    float cx = camera.x;
+    float cz = camera.z;
+
+    glColor3f(0.01f, 0.015f, 0.055f);
+
+    glBegin(GL_QUADS);
+
+    // Back sky wall.
+    glVertex3f(cx - skySize, 0.0f, cz - skySize);
+    glVertex3f(cx + skySize, 0.0f, cz - skySize);
+    glVertex3f(cx + skySize, skyHeight, cz - skySize);
+    glVertex3f(cx - skySize, skyHeight, cz - skySize);
+
+
+    // Front sky wall.
+    glVertex3f(cx + skySize, 0.0f, cz + skySize);
+    glVertex3f(cx - skySize, 0.0f, cz + skySize);
+    glVertex3f(cx - skySize, skyHeight, cz + skySize);
+    glVertex3f(cx + skySize, skyHeight, cz + skySize);
+
+
+    // Left sky wall.
+    glVertex3f(cx - skySize, 0.0f, cz + skySize);
+    glVertex3f(cx - skySize, 0.0f, cz - skySize);
+    glVertex3f(cx - skySize, skyHeight, cz - skySize);
+    glVertex3f(cx - skySize, skyHeight, cz + skySize);
+
+
+    // Right sky wall.
+    glVertex3f(cx + skySize, 0.0f, cz - skySize);
+    glVertex3f(cx + skySize, 0.0f, cz + skySize);
+    glVertex3f(cx + skySize, skyHeight, cz + skySize);
+    glVertex3f(cx + skySize, skyHeight, cz - skySize);
+
+
+    // Top sky surface makes the night sky visible when looking upward.
+    glVertex3f(cx - skySize, skyHeight, cz - skySize);
+    glVertex3f(cx + skySize, skyHeight, cz - skySize);
+    glVertex3f(cx + skySize, skyHeight, cz + skySize);
+    glVertex3f(cx - skySize, skyHeight, cz + skySize);
+
+    glEnd();
+
+
+    // -------------------------------------------------------------------------
+    // Stars
+    // -------------------------------------------------------------------------
+
+    // Increase point size if the stars need to appear brighter or larger.
+    glPointSize(2.0f);
+
+    glColor3f(0.82f, 0.84f, 0.95f);
+
+    glBegin(GL_POINTS);
+
+
+    // Stars directly above the carnival.
+    // Changing these X/Z offsets changes the star pattern.
+    glVertex3f(cx - 36.0f, skyHeight - 0.1f, cz - 34.0f);
+    glVertex3f(cx - 29.0f, skyHeight - 0.1f, cz - 18.0f);
+    glVertex3f(cx - 31.0f, skyHeight - 0.1f, cz + 4.0f);
+    glVertex3f(cx - 35.0f, skyHeight - 0.1f, cz + 24.0f);
+
+    glVertex3f(cx - 23.0f, skyHeight - 0.1f, cz - 28.0f);
+    glVertex3f(cx - 20.0f, skyHeight - 0.1f, cz - 8.0f);
+    glVertex3f(cx - 24.0f, skyHeight - 0.1f, cz + 14.0f);
+    glVertex3f(cx - 19.0f, skyHeight - 0.1f, cz + 32.0f);
+
+    glVertex3f(cx - 12.0f, skyHeight - 0.1f, cz - 37.0f);
+    glVertex3f(cx - 9.0f, skyHeight - 0.1f, cz - 20.0f);
+    glVertex3f(cx - 14.0f, skyHeight - 0.1f, cz - 2.0f);
+    glVertex3f(cx - 8.0f, skyHeight - 0.1f, cz + 19.0f);
+    glVertex3f(cx - 13.0f, skyHeight - 0.1f, cz + 37.0f);
+
+    glVertex3f(cx - 2.0f, skyHeight - 0.1f, cz - 30.0f);
+    glVertex3f(cx + 1.0f, skyHeight - 0.1f, cz - 13.0f);
+    glVertex3f(cx - 3.0f, skyHeight - 0.1f, cz + 7.0f);
+    glVertex3f(cx + 3.0f, skyHeight - 0.1f, cz + 27.0f);
+
+    glVertex3f(cx + 10.0f, skyHeight - 0.1f, cz - 38.0f);
+    glVertex3f(cx + 13.0f, skyHeight - 0.1f, cz - 22.0f);
+    glVertex3f(cx + 8.0f, skyHeight - 0.1f, cz - 5.0f);
+    glVertex3f(cx + 14.0f, skyHeight - 0.1f, cz + 13.0f);
+    glVertex3f(cx + 9.0f, skyHeight - 0.1f, cz + 34.0f);
+
+    glVertex3f(cx + 21.0f, skyHeight - 0.1f, cz - 31.0f);
+    glVertex3f(cx + 25.0f, skyHeight - 0.1f, cz - 13.0f);
+    glVertex3f(cx + 20.0f, skyHeight - 0.1f, cz + 4.0f);
+    glVertex3f(cx + 24.0f, skyHeight - 0.1f, cz + 23.0f);
+
+    glVertex3f(cx + 33.0f, skyHeight - 0.1f, cz - 35.0f);
+    glVertex3f(cx + 30.0f, skyHeight - 0.1f, cz - 18.0f);
+    glVertex3f(cx + 35.0f, skyHeight - 0.1f, cz + 2.0f);
+    glVertex3f(cx + 31.0f, skyHeight - 0.1f, cz + 31.0f);
+
+
+    // Stars on the back horizon.
+    glVertex3f(cx - 35.0f, 12.0f, cz - skySize + 0.1f);
+    glVertex3f(cx - 29.0f, 21.0f, cz - skySize + 0.1f);
+    glVertex3f(cx - 22.0f, 16.0f, cz - skySize + 0.1f);
+    glVertex3f(cx - 15.0f, 25.0f, cz - skySize + 0.1f);
+    glVertex3f(cx - 7.0f, 18.0f, cz - skySize + 0.1f);
+    glVertex3f(cx + 1.0f, 23.0f, cz - skySize + 0.1f);
+    glVertex3f(cx + 9.0f, 14.0f, cz - skySize + 0.1f);
+    glVertex3f(cx + 16.0f, 27.0f, cz - skySize + 0.1f);
+    glVertex3f(cx + 24.0f, 19.0f, cz - skySize + 0.1f);
+    glVertex3f(cx + 33.0f, 24.0f, cz - skySize + 0.1f);
+
+
+    // Stars on the front horizon.
+    glVertex3f(cx - 32.0f, 17.0f, cz + skySize - 0.1f);
+    glVertex3f(cx - 24.0f, 26.0f, cz + skySize - 0.1f);
+    glVertex3f(cx - 16.0f, 14.0f, cz + skySize - 0.1f);
+    glVertex3f(cx - 8.0f, 22.0f, cz + skySize - 0.1f);
+    glVertex3f(cx + 4.0f, 18.0f, cz + skySize - 0.1f);
+    glVertex3f(cx + 13.0f, 27.0f, cz + skySize - 0.1f);
+    glVertex3f(cx + 21.0f, 15.0f, cz + skySize - 0.1f);
+    glVertex3f(cx + 30.0f, 23.0f, cz + skySize - 0.1f);
+
+
+    // Stars on the left side of the sky.
+    glVertex3f(cx - skySize + 0.1f, 15.0f, cz - 32.0f);
+    glVertex3f(cx - skySize + 0.1f, 24.0f, cz - 21.0f);
+    glVertex3f(cx - skySize + 0.1f, 18.0f, cz - 8.0f);
+    glVertex3f(cx - skySize + 0.1f, 27.0f, cz + 5.0f);
+    glVertex3f(cx - skySize + 0.1f, 14.0f, cz + 18.0f);
+    glVertex3f(cx - skySize + 0.1f, 22.0f, cz + 31.0f);
+
+
+    // Stars on the right side of the sky.
+    glVertex3f(cx + skySize - 0.1f, 21.0f, cz - 35.0f);
+    glVertex3f(cx + skySize - 0.1f, 14.0f, cz - 23.0f);
+    glVertex3f(cx + skySize - 0.1f, 26.0f, cz - 10.0f);
+    glVertex3f(cx + skySize - 0.1f, 17.0f, cz + 4.0f);
+    glVertex3f(cx + skySize - 0.1f, 24.0f, cz + 19.0f);
+    glVertex3f(cx + skySize - 0.1f, 16.0f, cz + 34.0f);
+
+    glEnd();
+}
 
 
 // -----------------------------------------------------------------------------
@@ -43,14 +261,11 @@ int windowHeight = 600;
 
 void initialize()
 {
-    // Dark blue-black background for the night carnival atmosphere.
-    glClearColor(0.05f, 0.05f, 0.10f, 1.0f);
+    // Colour visible behind the scene if no geometry covers a pixel.
+    glClearColor(0.01f, 0.01f, 0.04f, 1.0f);
 
-    // Makes nearer surfaces hide surfaces behind them.
+    // Required so nearer 3D surfaces correctly hide surfaces behind them.
     glEnable(GL_DEPTH_TEST);
-
-    // Temporary object used to test the reusable mesh system.
-    testCube = Mesh::createCube(2.0f);
 }
 
 
@@ -65,15 +280,13 @@ void display()
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    // Positions and aims the viewer inside the 3D scene.
+    // Apply the player's current position and viewing direction.
     camera.applyView();
 
-    // Temporary colour until materials and lighting are introduced.
-    glColor3f(0.7f, 0.7f, 0.8f);
+    drawNightSky();
+    drawGround();
 
-    meshRenderer.renderWireframe(testCube);
-
-    // Display the completed back buffer on screen.
+    // Swap the completed back buffer to the screen.
     glutSwapBuffers();
 }
 
@@ -84,6 +297,7 @@ void display()
 
 void reshape(int width, int height)
 {
+    // Prevent division by zero if the window becomes extremely small.
     if (height == 0)
         height = 1;
 
@@ -99,14 +313,14 @@ void reshape(int width, int height)
 
     if (usePerspective)
     {
-        // FOV controls how wide the camera view appears.
-        // Near/far values define the visible depth range.
+        // 60 = field of view.
+        // 0.1 and 100 = near and far clipping distances.
         gluPerspective(60.0, aspect, 0.1, 100.0);
     }
     else
     {
-        // Larger values show more of the scene in orthographic mode.
-        float viewSize = 5.0f;
+        // Increase viewSize to show more of the carnival in orthographic mode.
+        float viewSize = 8.0f;
 
         if (width >= height)
             glOrtho(-viewSize * aspect, viewSize * aspect, -viewSize, viewSize, 0.1, 100.0);
@@ -119,13 +333,13 @@ void reshape(int width, int height)
 
 
 // -----------------------------------------------------------------------------
-// Keyboard input
+// Standard keyboard input
 // -----------------------------------------------------------------------------
 
 void keyboard(unsigned char key, int x, int y)
 {
-    // Movement speed can be adjusted later if navigation feels too fast or slow.
-    const float moveSpeed = 0.4f;
+    // Change the speed ofmovement.
+    const float moveSpeed = 0.6f;
 
     if (key == 'w' || key == 'W')
         camera.moveForward(moveSpeed);
@@ -139,7 +353,7 @@ void keyboard(unsigned char key, int x, int y)
     if (key == 'd' || key == 'D')
         camera.moveRight(moveSpeed);
 
-    // P switches between perspective and orthographic projection.
+    // P switches between perspective and orthographic projections.
     if (key == 'p' || key == 'P')
     {
         usePerspective = !usePerspective;
@@ -150,9 +364,13 @@ void keyboard(unsigned char key, int x, int y)
 }
 
 
+// -----------------------------------------------------------------------------
+// Special keyboard input
+// -----------------------------------------------------------------------------
+
 void specialKeyboard(int key, int x, int y)
 {
-    // Rotation speed controls how quickly the camera turns.
+    // Increase this value if the examiner asks the camera to turn faster.
     const float rotationSpeed = 4.0f;
 
     if (key == GLUT_KEY_LEFT)
@@ -179,7 +397,7 @@ int main(int argc, char** argv)
 {
     glutInit(&argc, argv);
 
-    // Double buffering prevents visible flickering while rendering.
+    // Double buffering reduces flickering and depth buffering enables 3D depth.
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 
     glutInitWindowSize(windowWidth, windowHeight);
@@ -189,7 +407,7 @@ int main(int argc, char** argv)
 
     initialize();
 
-    // Register GLUT callback functions.
+    // GLUT calls these functions when rendering, resizing, or receiving input.
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutKeyboardFunc(keyboard);

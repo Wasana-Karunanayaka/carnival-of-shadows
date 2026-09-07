@@ -4,7 +4,8 @@
  * Course: CSC3081 - Computer Graphics Programming
  *
  * Purpose:
- * Defines the camera used to view and navigate the 3D carnival scene.
+ * Defines the camera position, viewing direction and movement
+ * used to navigate the 3D carnival scene.
  */
 
 #pragma once
@@ -14,21 +15,22 @@ class Camera
 public:
     Camera();
 
-    // Applies the current camera position and direction to OpenGL.
+    // Applies the camera position and direction to the current OpenGL view.
     void applyView() const;
 
-    // Moves the camera forward or backward along its viewing direction.
+    // Positive distance moves forward; negative distance moves backward.
     void moveForward(float distance);
 
-    // Moves the camera sideways relative to its viewing direction.
+    // Positive distance moves right; negative distance moves left.
     void moveRight(float distance);
 
-    // Changes the horizontal viewing angle.
+    // Changes the horizontal viewing direction.
     void rotateYaw(float angle);
 
-    // Changes the vertical viewing angle.
+    // Changes the vertical viewing direction.
     void rotatePitch(float angle);
 
+    // Public so the position can be inspected during testing or review.
     float x;
     float y;
     float z;
@@ -41,6 +43,6 @@ private:
     float frontY;
     float frontZ;
 
-    // Recalculates the viewing direction from yaw and pitch.
+    // Converts yaw and pitch angles into a normalized direction vector.
     void updateDirection();
 };
