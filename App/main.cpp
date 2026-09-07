@@ -265,7 +265,7 @@ void drawCarnivalSign()
 {
     // Whole sign position near the entrance.
     glPushMatrix();
-    glTranslatef(-5.0f, 0.0f, 5.0f);
+    glTranslatef(-5.0f, 0.0f, 10.0f);
     glRotatef(8.0f, 0.0f, 1.0f, 0.0f);
 
 
@@ -328,7 +328,7 @@ void drawCarnivalSign()
 
     // Pointed ornament on top.
     glPushMatrix();
-    glTranslatef(0.0f, 3.55f, 0.0f);
+    glTranslatef(0.0f, 3.18f, 0.0f);
 
     glColor3f(0.35f, 0.08f, 0.06f);
     Primitives::drawCone(0.22f, 0.55f, 12);
@@ -351,6 +351,199 @@ void drawCarnivalSign()
     glPopMatrix();
 
     glPopMatrix();
+}
+
+
+// -----------------------------------------------------------------------------
+// Front fence
+// -----------------------------------------------------------------------------
+
+void drawFenceSection(float startX, float endX, float z)
+{
+    const float postSpacing = 2.0f;
+
+    // Fence posts.
+    for (float x = startX; x <= endX; x += postSpacing)
+    {
+        glPushMatrix();
+        glTranslatef(x, 0.0f, z);
+
+        glColor3f(0.14f, 0.06f, 0.03f);
+        Primitives::drawCylinder(0.10f, 1.7f, 10);
+
+        // Pointed top.
+        glPushMatrix();
+        glTranslatef(0.0f, 1.7f, 0.0f);
+
+        glColor3f(0.20f, 0.07f, 0.04f);
+        Primitives::drawCone(0.15f, 0.35f, 10);
+
+        glPopMatrix();
+
+        glPopMatrix();
+    }
+
+
+    float fenceLength = endX - startX;
+    float centreX = (startX + endX) / 2.0f;
+
+    // Lower horizontal rail.
+    glPushMatrix();
+    glTranslatef(centreX, 0.55f, z);
+    glScalef(fenceLength, 0.12f, 0.12f);
+
+    glColor3f(0.12f, 0.05f, 0.025f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // Upper horizontal rail.
+    glPushMatrix();
+    glTranslatef(centreX, 1.25f, z);
+    glScalef(fenceLength, 0.12f, 0.12f);
+
+    glColor3f(0.12f, 0.05f, 0.025f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+}
+
+
+// -----------------------------------------------------------------------------
+// Haunted carnival entrance gate
+// -----------------------------------------------------------------------------
+
+void drawEntranceGate()
+{
+    // Gate position across the main entrance path.
+    const float gateZ = 5.0f;
+
+    glPushMatrix();
+    glTranslatef(0.0f, 0.0f, gateZ);
+
+
+    // Left gate post.
+    glPushMatrix();
+    glTranslatef(-3.2f, 0.0f, 0.0f);
+
+    glColor3f(0.16f, 0.06f, 0.035f);
+    Primitives::drawCylinder(0.28f, 4.2f, 12);
+
+    // Pointed top.
+    glPushMatrix();
+    glTranslatef(0.0f, 4.2f, 0.0f);
+
+    glColor3f(0.32f, 0.08f, 0.05f);
+    Primitives::drawCone(0.38f, 0.8f, 12);
+
+    glPopMatrix();
+
+    glPopMatrix();
+
+
+    // Right gate post.
+    glPushMatrix();
+    glTranslatef(3.2f, 0.0f, 0.0f);
+
+    glColor3f(0.16f, 0.06f, 0.035f);
+    Primitives::drawCylinder(0.28f, 4.2f, 12);
+
+    glPushMatrix();
+    glTranslatef(0.0f, 4.2f, 0.0f);
+
+    glColor3f(0.32f, 0.08f, 0.05f);
+    Primitives::drawCone(0.38f, 0.8f, 12);
+
+    glPopMatrix();
+
+    glPopMatrix();
+
+
+    // Main beam above the entrance.
+    glPushMatrix();
+    glTranslatef(0.0f, 3.65f, 0.0f);
+    glRotatef(-2.0f, 0.0f, 0.0f, 1.0f);
+    glScalef(6.8f, 0.35f, 0.35f);
+
+    glColor3f(0.20f, 0.07f, 0.035f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // Upper crooked beam.
+    glPushMatrix();
+    glTranslatef(0.0f, 4.25f, 0.0f);
+    glRotatef(3.0f, 0.0f, 0.0f, 1.0f);
+    glScalef(5.3f, 0.22f, 0.28f);
+
+    glColor3f(0.25f, 0.065f, 0.04f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // Centre decoration.
+    glPushMatrix();
+    glTranslatef(0.0f, 4.2f, 0.0f);
+
+    glColor3f(0.40f, 0.08f, 0.06f);
+    Primitives::drawSphere(0.32f, 14, 14);
+
+    glPopMatrix();
+
+
+    // Three spikes above the gate.
+    for (int i = -1; i <= 1; i++)
+    {
+        glPushMatrix();
+        glTranslatef(i * 1.4f, 4.35f, 0.0f);
+
+        glColor3f(0.28f, 0.07f, 0.05f);
+        Primitives::drawCone(0.18f, 0.65f, 10);
+
+        glPopMatrix();
+    }
+
+
+    // Hanging broken plank on the left side.
+    glPushMatrix();
+    glTranslatef(-1.7f, 3.35f, 0.0f);
+    glRotatef(12.0f, 0.0f, 0.0f, 1.0f);
+    glScalef(1.5f, 0.18f, 0.18f);
+
+    glColor3f(0.17f, 0.05f, 0.025f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // Hanging broken plank on the right side.
+    glPushMatrix();
+    glTranslatef(1.6f, 3.30f, 0.0f);
+    glRotatef(-10.0f, 0.0f, 0.0f, 1.0f);
+    glScalef(1.3f, 0.18f, 0.18f);
+
+    glColor3f(0.17f, 0.05f, 0.025f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    glPopMatrix();
+}
+
+
+// -----------------------------------------------------------------------------
+// Carnival boundary
+// -----------------------------------------------------------------------------
+
+void drawCarnivalFence()
+{
+    // Leave the middle open for the entrance gate.
+    drawFenceSection(-20.0f, -3.5f, 5.0f);
+    drawFenceSection(3.5f, 20.0f, 5.0f);
 }
 
 
@@ -384,7 +577,10 @@ void display()
 
     drawNightSky();
     drawGround();
-	drawCarnivalSign();
+
+    drawCarnivalFence();
+    drawEntranceGate();
+    drawCarnivalSign();
 
     // Swap the completed back buffer to the screen.
     glutSwapBuffers();
