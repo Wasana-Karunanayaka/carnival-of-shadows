@@ -17,6 +17,7 @@
 
 #include "../Lib/Primitives.h"
 #include "../Lib/HauntedTree.h"
+#include "../Lib/TextureManager.h"
 #include "Camera.h"
 
 #include <cmath>
@@ -43,66 +44,137 @@ int windowHeight = 600;
 
 void drawGround()
 {
-    // Increase this value if the carnival needs more usable land.
     const float groundSize = 40.0f;
+    const float pathY = 0.015f;
 
-    // Dark grass/soil colour. This can later be replaced with a ground texture.
-    glColor3f(0.07f, 0.08f, 0.07f);
+
+    // -------------------------------------------------------------------------
+    // Muddy ground
+    // -------------------------------------------------------------------------
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, TextureManager::groundTexture);
+
+    // White keeps the original texture colour.
+    glColor3f(1.0f, 1.0f, 1.0f);
 
     glBegin(GL_QUADS);
 
+    // Repeat the texture instead of stretching it across the whole carnival.
+    glTexCoord2f(0.0f, 0.0f);
     glVertex3f(-groundSize, 0.0f, -groundSize);
+
+    glTexCoord2f(16.0f, 0.0f);
     glVertex3f(groundSize, 0.0f, -groundSize);
+
+    glTexCoord2f(16.0f, 16.0f);
     glVertex3f(groundSize, 0.0f, groundSize);
+
+    glTexCoord2f(0.0f, 16.0f);
     glVertex3f(-groundSize, 0.0f, groundSize);
 
     glEnd();
 
 
-    // Slightly raised above the ground to prevent overlapping surfaces flickering.
-    const float pathY = 0.01f;
+    // -------------------------------------------------------------------------
+    // Dirty carnival paths
+    // -------------------------------------------------------------------------
 
-    glColor3f(0.17f, 0.15f, 0.13f);
+    glBindTexture(GL_TEXTURE_2D, TextureManager::pathTexture);
 
-    glBegin(GL_QUADS);
 
     // Main entrance path.
-    // Change +/-2.5 to make the path wider or narrower.
+    glBegin(GL_QUADS);
+
+    glTexCoord2f(0.0f, 0.0f);
     glVertex3f(-2.5f, pathY, 12.0f);
+
+    glTexCoord2f(2.0f, 0.0f);
     glVertex3f(2.5f, pathY, 12.0f);
+
+    glTexCoord2f(2.0f, 6.0f);
     glVertex3f(2.5f, pathY, -5.0f);
+
+    glTexCoord2f(0.0f, 6.0f);
     glVertex3f(-2.5f, pathY, -5.0f);
 
+    glEnd();
 
-    // Central carnival plaza.
-    // This area gives enough space for visitors to move between attractions.
+
+    // Central plaza.
+    glBegin(GL_QUADS);
+
+    glTexCoord2f(0.0f, 0.0f);
     glVertex3f(-12.0f, pathY, -5.0f);
+
+    glTexCoord2f(8.0f, 0.0f);
     glVertex3f(12.0f, pathY, -5.0f);
+
+    glTexCoord2f(8.0f, 5.0f);
     glVertex3f(12.0f, pathY, -20.0f);
+
+    glTexCoord2f(0.0f, 5.0f);
     glVertex3f(-12.0f, pathY, -20.0f);
 
+    glEnd();
 
-    // Left branch leading toward the circus tent area.
+
+    // Left branch.
+    glBegin(GL_QUADS);
+
+    glTexCoord2f(0.0f, 0.0f);
     glVertex3f(-22.0f, pathY, -10.0f);
+
+    glTexCoord2f(3.0f, 0.0f);
     glVertex3f(-12.0f, pathY, -10.0f);
+
+    glTexCoord2f(3.0f, 2.0f);
     glVertex3f(-12.0f, pathY, -15.0f);
+
+    glTexCoord2f(0.0f, 2.0f);
     glVertex3f(-22.0f, pathY, -15.0f);
 
+    glEnd();
 
-    // Right branch leading toward the haunted house area.
+
+    // Right branch.
+    glBegin(GL_QUADS);
+
+    glTexCoord2f(0.0f, 0.0f);
     glVertex3f(12.0f, pathY, -10.0f);
+
+    glTexCoord2f(3.0f, 0.0f);
     glVertex3f(22.0f, pathY, -10.0f);
+
+    glTexCoord2f(3.0f, 2.0f);
     glVertex3f(22.0f, pathY, -15.0f);
+
+    glTexCoord2f(0.0f, 2.0f);
     glVertex3f(12.0f, pathY, -15.0f);
 
+    glEnd();
 
-    // Rear path leading deeper into the carnival.
+
+    // Rear path.
+    glBegin(GL_QUADS);
+
+    glTexCoord2f(0.0f, 0.0f);
     glVertex3f(-3.0f, pathY, -20.0f);
+
+    glTexCoord2f(2.0f, 0.0f);
     glVertex3f(3.0f, pathY, -20.0f);
+
+    glTexCoord2f(2.0f, 5.0f);
     glVertex3f(3.0f, pathY, -34.0f);
+
+    glTexCoord2f(0.0f, 5.0f);
     glVertex3f(-3.0f, pathY, -34.0f);
 
     glEnd();
+
+
+    // Other objects still use normal colours.
+    glDisable(GL_TEXTURE_2D);
 }
 
 
@@ -261,6 +333,41 @@ void drawNightSky()
 
 
 // -----------------------------------------------------------------------------
+// Rotten wood surface
+// -----------------------------------------------------------------------------
+
+void drawRottenWoodCube()
+{
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, TextureManager::woodTexture);
+
+    // Darken the wood slightly.
+    glColor3f(0.62f, 0.56f, 0.50f);
+
+    Primitives::drawTexturedCube(1.0f);
+
+    glDisable(GL_TEXTURE_2D);
+}
+
+
+// -----------------------------------------------------------------------------
+// Old stone surface
+// -----------------------------------------------------------------------------
+
+void drawOldStoneCube()
+{
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, TextureManager::stoneTexture);
+
+    glColor3f(0.72f, 0.72f, 0.68f);
+
+    Primitives::drawTexturedCube(1.0f);
+
+    glDisable(GL_TEXTURE_2D);
+}
+
+
+// -----------------------------------------------------------------------------
 // Haunted carnival sign
 // -----------------------------------------------------------------------------
 
@@ -278,8 +385,7 @@ void drawCarnivalSign()
     glRotatef(-3.0f, 0.0f, 0.0f, 1.0f);
     glScalef(1.5f, 0.35f, 1.0f);
 
-    glColor3f(0.18f, 0.18f, 0.20f);
-    Primitives::drawCube(1.0f);
+    drawOldStoneCube();
 
     glPopMatrix();
 
@@ -299,8 +405,7 @@ void drawCarnivalSign()
     glRotatef(-8.0f, 0.0f, 0.0f, 1.0f);
     glScalef(2.9f, 0.75f, 0.22f);
 
-    glColor3f(0.30f, 0.07f, 0.05f);
-    Primitives::drawCube(1.0f);
+    drawRottenWoodCube();
 
     glPopMatrix();
 
@@ -311,8 +416,7 @@ void drawCarnivalSign()
     glRotatef(12.0f, 0.0f, 0.0f, 1.0f);
     glScalef(1.8f, 0.30f, 0.18f);
 
-    glColor3f(0.24f, 0.06f, 0.04f);
-    Primitives::drawCube(1.0f);
+    drawRottenWoodCube();
 
     glPopMatrix();
 
@@ -323,8 +427,7 @@ void drawCarnivalSign()
     glRotatef(-25.0f, 0.0f, 0.0f, 1.0f);
     glScalef(0.7f, 0.22f, 0.16f);
 
-    glColor3f(0.20f, 0.05f, 0.03f);
-    Primitives::drawCube(1.0f);
+    drawRottenWoodCube();
 
     glPopMatrix();
 
@@ -333,8 +436,7 @@ void drawCarnivalSign()
     glPushMatrix();
     glTranslatef(0.0f, 3.18f, 0.0f);
 
-    glColor3f(0.35f, 0.08f, 0.06f);
-    Primitives::drawCone(0.22f, 0.55f, 12);
+    drawRottenWoodCube();
 
     glPopMatrix();
 
@@ -345,8 +447,7 @@ void drawCarnivalSign()
     glRotatef(6.0f, 0.0f, 0.0f, 1.0f);
     glScalef(0.12f, 0.9f, 0.12f);
 
-    glColor3f(0.12f, 0.05f, 0.03f);
-    Primitives::drawCube(1.0f);
+    drawRottenWoodCube();
 
     glPopMatrix();
 
@@ -395,8 +496,7 @@ void drawFenceSection(float startX, float endX, float z)
     glTranslatef(centreX, 0.55f, z);
     glScalef(fenceLength, 0.12f, 0.12f);
 
-    glColor3f(0.12f, 0.05f, 0.025f);
-    Primitives::drawCube(1.0f);
+    drawRottenWoodCube();
 
     glPopMatrix();
 
@@ -406,8 +506,7 @@ void drawFenceSection(float startX, float endX, float z)
     glTranslatef(centreX, 1.25f, z);
     glScalef(fenceLength, 0.12f, 0.12f);
 
-    glColor3f(0.12f, 0.05f, 0.025f);
-    Primitives::drawCube(1.0f);
+    drawRottenWoodCube();
 
     glPopMatrix();
 }
@@ -469,8 +568,7 @@ void drawEntranceGate()
     glRotatef(-2.0f, 0.0f, 0.0f, 1.0f);
     glScalef(6.8f, 0.35f, 0.35f);
 
-    glColor3f(0.20f, 0.07f, 0.035f);
-    Primitives::drawCube(1.0f);
+    drawRottenWoodCube();
 
     glPopMatrix();
 
@@ -481,8 +579,7 @@ void drawEntranceGate()
     glRotatef(3.0f, 0.0f, 0.0f, 1.0f);
     glScalef(5.3f, 0.22f, 0.28f);
 
-    glColor3f(0.25f, 0.065f, 0.04f);
-    Primitives::drawCube(1.0f);
+    drawRottenWoodCube();
 
     glPopMatrix();
 
@@ -516,8 +613,7 @@ void drawEntranceGate()
     glRotatef(12.0f, 0.0f, 0.0f, 1.0f);
     glScalef(1.5f, 0.18f, 0.18f);
 
-    glColor3f(0.17f, 0.05f, 0.025f);
-    Primitives::drawCube(1.0f);
+    drawRottenWoodCube();
 
     glPopMatrix();
 
@@ -606,7 +702,12 @@ void drawRedHorrorTent()
     glPopMatrix();
 
 
-    // Tent walls.
+    // -----------------------------------------------------------------------------
+    // Textured tent walls
+    // -----------------------------------------------------------------------------
+
+    glEnable(GL_TEXTURE_2D);
+
     for (int i = 0; i < segments; i++)
     {
         // Keep the +X side open as the entrance.
@@ -622,22 +723,38 @@ void drawRedHorrorTent()
         float z2 = radius * sinf(angle2);
 
         if (i % 2 == 0)
-            glColor3f(0.52f, 0.055f, 0.035f);
+        {
+            glBindTexture(GL_TEXTURE_2D, TextureManager::redClothTexture);
+            glColor3f(0.60f, 0.60f, 0.60f);
+        }
         else
-            glColor3f(0.55f, 0.38f, 0.12f);
+        {
+            glBindTexture(GL_TEXTURE_2D, TextureManager::dirtyClothTexture);
+            glColor3f(0.65f, 0.62f, 0.55f);
+        }
 
         glBegin(GL_QUADS);
 
+        glTexCoord2f(0.0f, 0.0f);
         glVertex3f(x1, 0.0f, z1);
+
+        glTexCoord2f(1.0f, 0.0f);
         glVertex3f(x2, 0.0f, z2);
+
+        glTexCoord2f(1.0f, 2.5f);
         glVertex3f(x2, wallHeight, z2);
+
+        glTexCoord2f(0.0f, 2.5f);
         glVertex3f(x1, wallHeight, z1);
 
         glEnd();
     }
 
 
-    // Striped roof.
+    // -----------------------------------------------------------------------------
+    // Textured tent roof
+    // -----------------------------------------------------------------------------
+
     for (int i = 0; i < segments; i++)
     {
         float angle1 = 2.0f * pi * i / segments;
@@ -649,18 +766,31 @@ void drawRedHorrorTent()
         float z2 = radius * sinf(angle2);
 
         if (i % 2 == 0)
-            glColor3f(0.60f, 0.06f, 0.04f);
+        {
+            glBindTexture(GL_TEXTURE_2D, TextureManager::redClothTexture);
+            glColor3f(0.55f, 0.55f, 0.55f);
+        }
         else
-            glColor3f(0.63f, 0.42f, 0.14f);
+        {
+            glBindTexture(GL_TEXTURE_2D, TextureManager::dirtyClothTexture);
+            glColor3f(0.60f, 0.57f, 0.50f);
+        }
 
         glBegin(GL_TRIANGLES);
 
+        glTexCoord2f(0.0f, 0.0f);
         glVertex3f(x1, wallHeight, z1);
+
+        glTexCoord2f(1.0f, 0.0f);
         glVertex3f(x2, wallHeight, z2);
+
+        glTexCoord2f(0.5f, 2.5f);
         glVertex3f(0.0f, roofPeak, 0.0f);
 
         glEnd();
     }
+
+    glDisable(GL_TEXTURE_2D);
 
 
     // Tall front entrance.
@@ -1572,107 +1702,6 @@ void drawHauntedFunHouse()
 
 
 // -----------------------------------------------------------------------------
-// Tree branch
-// -----------------------------------------------------------------------------
-
-void drawTreeBranch(float length, float radius, float rotateZ, float rotateX)
-{
-    glPushMatrix();
-
-    glRotatef(rotateZ, 0.0f, 0.0f, 1.0f);
-    glRotatef(rotateX, 1.0f, 0.0f, 0.0f);
-
-    glColor3f(0.09f, 0.04f, 0.018f);
-    Primitives::drawCylinder(radius, length, 9);
-
-    glPopMatrix();
-}
-
-
-// -----------------------------------------------------------------------------
-// Dead tree
-// -----------------------------------------------------------------------------
-
-void drawDeadTree()
-{
-    // Wide roots around the trunk.
-    for (int i = 0; i < 5; i++)
-    {
-        glPushMatrix();
-
-        float angle = i * 72.0f;
-
-        glRotatef(angle, 0.0f, 1.0f, 0.0f);
-        glTranslatef(0.0f, 0.10f, 0.65f);
-        glRotatef(-12.0f, 1.0f, 0.0f, 0.0f);
-        glScalef(0.18f, 0.16f, 1.5f);
-
-        glColor3f(0.075f, 0.032f, 0.015f);
-        Primitives::drawCube(1.0f);
-
-        glPopMatrix();
-    }
-
-
-    // Lower trunk.
-    glPushMatrix();
-    glRotatef(-4.0f, 0.0f, 0.0f, 1.0f);
-
-    glColor3f(0.105f, 0.045f, 0.018f);
-    Primitives::drawCylinder(0.38f, 2.3f, 10);
-
-    glPopMatrix();
-
-
-    // Upper trunk bends slightly.
-    glPushMatrix();
-    glTranslatef(-0.16f, 2.15f, 0.0f);
-    glRotatef(8.0f, 0.0f, 0.0f, 1.0f);
-
-    glColor3f(0.095f, 0.038f, 0.016f);
-    Primitives::drawCylinder(0.27f, 2.6f, 9);
-
-
-    // Long left branch.
-    glPushMatrix();
-    glTranslatef(0.0f, 1.35f, 0.0f);
-
-    drawTreeBranch(2.0f, 0.16f, 58.0f, -12.0f);
-
-    glPushMatrix();
-    glTranslatef(-1.65f, 1.05f, 0.15f);
-    drawTreeBranch(1.15f, 0.09f, 35.0f, 20.0f);
-    glPopMatrix();
-
-    glPopMatrix();
-
-
-    // Long right branch.
-    glPushMatrix();
-    glTranslatef(0.0f, 1.7f, 0.0f);
-
-    drawTreeBranch(1.8f, 0.14f, -52.0f, 18.0f);
-
-    glPushMatrix();
-    glTranslatef(1.4f, 1.05f, -0.2f);
-    drawTreeBranch(1.0f, 0.08f, -30.0f, -25.0f);
-    glPopMatrix();
-
-    glPopMatrix();
-
-
-    // Broken upper branch.
-    glPushMatrix();
-    glTranslatef(0.0f, 2.25f, 0.0f);
-    drawTreeBranch(1.1f, 0.11f, 22.0f, 8.0f);
-    glPopMatrix();
-
-
-    glPopMatrix();
-}
-
-
-// -----------------------------------------------------------------------------
 // Old carnival bench
 // -----------------------------------------------------------------------------
 
@@ -1923,6 +1952,8 @@ void drawGravestone()
 }
 
 
+
+
 // -----------------------------------------------------------------------------
 // Cross gravestone
 // -----------------------------------------------------------------------------
@@ -1933,8 +1964,7 @@ void drawCrossGravestone()
     glTranslatef(0.0f, 0.15f, 0.0f);
     glScalef(1.2f, 0.30f, 0.7f);
 
-    glColor3f(0.20f, 0.20f, 0.19f);
-    Primitives::drawCube(1.0f);
+    drawOldStoneCube();
 
     glPopMatrix();
 
@@ -1943,8 +1973,7 @@ void drawCrossGravestone()
     glTranslatef(0.0f, 1.15f, 0.0f);
     glScalef(0.38f, 2.0f, 0.32f);
 
-    glColor3f(0.24f, 0.24f, 0.23f);
-    Primitives::drawCube(1.0f);
+    drawOldStoneCube();
 
     glPopMatrix();
 
@@ -1953,8 +1982,7 @@ void drawCrossGravestone()
     glTranslatef(0.0f, 1.55f, 0.0f);
     glScalef(1.3f, 0.34f, 0.32f);
 
-    glColor3f(0.24f, 0.24f, 0.23f);
-    Primitives::drawCube(1.0f);
+    drawOldStoneCube();
 
     glPopMatrix();
 }
@@ -2673,6 +2701,12 @@ void initialize()
 
     // Required so nearer 3D surfaces correctly hide surfaces behind them.
     glEnable(GL_DEPTH_TEST);
+
+    // Keep texture colours unchanged when drawing textured surfaces.
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+    TextureManager::initialize();
+
 }
 
 

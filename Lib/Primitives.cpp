@@ -74,3 +74,114 @@ void Primitives::drawCone(float radius, float height, int slices)
 
     gluDeleteQuadric(quadric);
 }
+
+
+// -----------------------------------------------------------------------------
+// Textured cube
+// -----------------------------------------------------------------------------
+
+void Primitives::drawTexturedCube(float size)
+{
+    float h = size / 2.0f;
+
+    glBegin(GL_QUADS);
+
+
+    // Front.
+    glNormal3f(0.0f, 0.0f, 1.0f);
+
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(-h, -h, h);
+
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex3f(h, -h, h);
+
+    glTexCoord2f(1.0f, 1.0f);
+    glVertex3f(h, h, h);
+
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex3f(-h, h, h);
+
+
+    // Back.
+    glNormal3f(0.0f, 0.0f, -1.0f);
+
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(h, -h, -h);
+
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex3f(-h, -h, -h);
+
+    glTexCoord2f(1.0f, 1.0f);
+    glVertex3f(-h, h, -h);
+
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex3f(h, h, -h);
+
+
+    // Left.
+    glNormal3f(-1.0f, 0.0f, 0.0f);
+
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(-h, -h, -h);
+
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex3f(-h, -h, h);
+
+    glTexCoord2f(1.0f, 1.0f);
+    glVertex3f(-h, h, h);
+
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex3f(-h, h, -h);
+
+
+    // Right.
+    glNormal3f(1.0f, 0.0f, 0.0f);
+
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(h, -h, h);
+
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex3f(h, -h, -h);
+
+    glTexCoord2f(1.0f, 1.0f);
+    glVertex3f(h, h, -h);
+
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex3f(h, h, h);
+
+
+    // Top.
+    glNormal3f(0.0f, 1.0f, 0.0f);
+
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(-h, h, h);
+
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex3f(h, h, h);
+
+    glTexCoord2f(1.0f, 1.0f);
+    glVertex3f(h, h, -h);
+
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex3f(-h, h, -h);
+
+
+    // Bottom.
+    glNormal3f(0.0f, -1.0f, 0.0f);
+
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(-h, -h, -h);
+
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex3f(h, -h, -h);
+
+    glTexCoord2f(1.0f, 1.0f);
+    glVertex3f(h, -h, h);
+
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex3f(-h, -h, h);
+
+
+    glEnd();
+}
