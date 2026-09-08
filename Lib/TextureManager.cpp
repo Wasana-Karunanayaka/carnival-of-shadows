@@ -20,6 +20,7 @@ GLuint TextureManager::woodTexture = 0;
 GLuint TextureManager::stoneTexture = 0;
 GLuint TextureManager::redClothTexture = 0;
 GLuint TextureManager::dirtyClothTexture = 0;
+GLuint TextureManager::rustyMetalTexture = 0;
 
 
 // -----------------------------------------------------------------------------
@@ -67,11 +68,14 @@ bool TextureManager::initialize()
     stoneTexture = loadTexture("textures/old_stone.jpg");
     redClothTexture = loadTexture("textures/red_torn_cloth.jpg");
     dirtyClothTexture = loadTexture("textures/dirty_cloth.jpg");
+    rustyMetalTexture = loadTexture("textures/rusty_metal.jpg");
 
     return groundTexture != 0 &&
         pathTexture != 0 &&
         woodTexture != 0 &&
         stoneTexture != 0 &&
         redClothTexture != 0 &&
-        dirtyClothTexture != 0;
+        dirtyClothTexture != 0 &&
+        rustyMetalTexture != 0;
+
 }

@@ -151,6 +151,7 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="FerrisWheel.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="HauntedTree.h" />
     <ClInclude Include="Mesh.h" />
@@ -160,6 +161,7 @@
     <ClInclude Include="TextureManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="FerrisWheel.cpp" />
     <ClCompile Include="HauntedTree.cpp" />
     <ClCompile Include="Lib.cpp" />
     <ClCompile Include="Mesh.cpp" />

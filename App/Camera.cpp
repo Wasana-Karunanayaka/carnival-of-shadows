@@ -18,7 +18,7 @@ Camera::Camera()
 {
     // Starting position near the carnival entrance.
     x = 0.0f;
-    y = 3.0f;
+    y = 5.0f;
     z = 20.0f;
 
     // -90 degrees makes the initial camera face toward negative Z.
@@ -87,6 +87,21 @@ void Camera::rotatePitch(float angle)
 
     updateDirection();
 }
+
+
+// -----------------------------------------------------------------------------
+// Vertical camera movement
+// -----------------------------------------------------------------------------
+
+void Camera::moveUp(float distance)
+{
+    y += distance;
+
+    // Stop the camera going under the ground.
+    if (y < 0.5f)
+        y = 0.5f;
+}
+
 
 void Camera::applyView() const
 {

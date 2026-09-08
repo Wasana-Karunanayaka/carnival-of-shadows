@@ -18,6 +18,8 @@
 #include "../Lib/Primitives.h"
 #include "../Lib/HauntedTree.h"
 #include "../Lib/TextureManager.h"
+#include "../Lib/FerrisWheel.h"
+
 #include "Camera.h"
 
 #include <cmath>
@@ -29,6 +31,7 @@
  // -----------------------------------------------------------------------------
 
 Camera camera;
+FerrisWheel ferrisWheel;
 
 // true = perspective projection, false = orthographic projection.
 bool usePerspective = true;
@@ -722,6 +725,15 @@ void drawRedHorrorTent()
         float x2 = radius * cosf(angle2);
         float z2 = radius * sinf(angle2);
 
+        // Normal points outward from this tent panel.
+        float middleAngle = (angle1 + angle2) / 2.0f;
+
+        glNormal3f(
+            cosf(middleAngle),
+            0.0f,
+            sinf(middleAngle)
+        );
+
         if (i % 2 == 0)
         {
             glBindTexture(GL_TEXTURE_2D, TextureManager::redClothTexture);
@@ -732,6 +744,7 @@ void drawRedHorrorTent()
             glBindTexture(GL_TEXTURE_2D, TextureManager::dirtyClothTexture);
             glColor3f(0.65f, 0.62f, 0.55f);
         }
+
 
         glBegin(GL_QUADS);
 
@@ -776,6 +789,21 @@ void drawRedHorrorTent()
             glColor3f(0.60f, 0.57f, 0.50f);
         }
 
+        // Roof normal points outward and upward.
+        float middleAngle = (angle1 + angle2) / 2.0f;
+
+        float roofRise = roofPeak - wallHeight;
+        float normalLength = sqrtf(
+            roofRise * roofRise +
+            radius * radius
+        );
+
+        glNormal3f(
+            roofRise * cosf(middleAngle) / normalLength,
+            radius / normalLength,
+            roofRise * sinf(middleAngle) / normalLength
+        );
+
         glBegin(GL_TRIANGLES);
 
         glTexCoord2f(0.0f, 0.0f);
@@ -793,12 +821,68 @@ void drawRedHorrorTent()
     glDisable(GL_TEXTURE_2D);
 
 
-    // Tall front entrance.
-    glPushMatrix();
-    glTranslatef(5.8f, 3.2f, 0.0f);
-    glScalef(0.35f, 6.4f, 4.2f);
+    // -----------------------------------------------------------------------------
+    // Textured tent entrance
+    // -----------------------------------------------------------------------------
 
-    glColor3f(0.42f, 0.045f, 0.03f);
+    // Left entrance curtain.
+    glPushMatrix();
+
+    glTranslatef(5.82f, 1.75f, -1.45f);
+    glScalef(0.30f, 3.5f, 0.85f);
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, TextureManager::redClothTexture);
+
+    glColor3f(0.55f, 0.50f, 0.48f);
+    Primitives::drawTexturedCube(1.0f);
+
+    glDisable(GL_TEXTURE_2D);
+
+    glPopMatrix();
+
+
+    // Right entrance curtain.
+    glPushMatrix();
+
+    glTranslatef(5.82f, 1.75f, 1.45f);
+    glScalef(0.30f, 3.5f, 0.85f);
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, TextureManager::redClothTexture);
+
+    glColor3f(0.55f, 0.50f, 0.48f);
+    Primitives::drawTexturedCube(1.0f);
+
+    glDisable(GL_TEXTURE_2D);
+
+    glPopMatrix();
+
+
+    // Cloth above the entrance.
+    glPushMatrix();
+
+    glTranslatef(5.82f, 3.75f, 0.0f);
+    glScalef(0.30f, 0.55f, 3.7f);
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, TextureManager::dirtyClothTexture);
+
+    glColor3f(0.52f, 0.48f, 0.42f);
+    Primitives::drawTexturedCube(1.0f);
+
+    glDisable(GL_TEXTURE_2D);
+
+    glPopMatrix();
+
+
+    // Dark entrance inside the tent.
+    glPushMatrix();
+
+    glTranslatef(5.96f, 1.55f, 0.0f);
+    glScalef(0.12f, 3.1f, 2.0f);
+
+    glColor3f(0.006f, 0.004f, 0.004f);
     Primitives::drawCube(1.0f);
 
     glPopMatrix();
@@ -813,18 +897,6 @@ void drawRedHorrorTent()
     Primitives::drawCube(1.0f);
 
     glPopMatrix();
-
-
-    // Entrance roof.
-    glPushMatrix();
-    glTranslatef(5.9f, 6.55f, 0.0f);
-    glScalef(0.55f, 0.35f, 4.5f);
-
-    glColor3f(0.22f, 0.025f, 0.02f);
-    Primitives::drawCube(1.0f);
-
-    glPopMatrix();
-
 
     // Centre mast.
     glPushMatrix();
@@ -2352,7 +2424,7 @@ void drawEnvironmentProps()
     // Dead trees
     // -------------------------------------------------------------------------
 
-    const float treePositions[10][3] =
+    const float treePositions[9][3] =
     {
         {-9.0f, 0.0f,  2.0f},
         {10.0f, 0.0f,  1.5f},
@@ -2360,7 +2432,6 @@ void drawEnvironmentProps()
         {14.0f, 0.0f, -21.5f},
         {-34.0f, 0.0f, -21.0f},
         {-33.0f, 0.0f, -33.0f},
-        {18.0f, 0.0f, -28.0f},
         {21.0f, 0.0f, -2.0f},
         {-17.0f, 0.0f, 2.0f},
         {31.0f, 0.0f, -25.0f}
@@ -2691,6 +2762,69 @@ void drawEnvironmentProps()
 
 
 // -----------------------------------------------------------------------------
+// Carnival lighting
+// -----------------------------------------------------------------------------
+
+void setupLighting()
+{
+    // Very low light so the scene stays dark.
+    GLfloat globalAmbient[] =
+    {
+        0.06f, 0.07f, 0.09f, 1.0f
+    };
+
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmbient);
+
+
+    // -------------------------------------------------------------------------
+    // Cold moonlight
+    // -------------------------------------------------------------------------
+
+    GLfloat moonDiffuse[] =
+    {
+        0.22f, 0.27f, 0.38f, 1.0f
+    };
+
+    GLfloat moonAmbient[] =
+    {
+        0.04f, 0.05f, 0.08f, 1.0f
+    };
+
+    // 0 at the end means directional light.
+    GLfloat moonDirection[] =
+    {
+        -0.4f, 1.0f, 0.3f, 0.0f
+    };
+
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, moonDiffuse);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, moonAmbient);
+    glLightfv(GL_LIGHT0, GL_POSITION, moonDirection);
+
+
+    // -------------------------------------------------------------------------
+    // Ferris wheel horror light
+    // -------------------------------------------------------------------------
+
+    GLfloat ferrisDiffuse[] =
+    {
+        0.45f, 0.06f, 0.035f, 1.0f
+    };
+
+    GLfloat ferrisPosition[] =
+    {
+        18.0f, 7.0f, -28.0f, 1.0f
+    };
+
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, ferrisDiffuse);
+    glLightfv(GL_LIGHT1, GL_POSITION, ferrisPosition);
+
+    // Make the light fade with distance.
+    glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, 0.6f);
+    glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, 0.05f);
+}
+
+
+// -----------------------------------------------------------------------------
 // Initialization
 // -----------------------------------------------------------------------------
 
@@ -2702,12 +2836,39 @@ void initialize()
     // Required so nearer 3D surfaces correctly hide surfaces behind them.
     glEnable(GL_DEPTH_TEST);
 
+	// Enable lighting and the two light sources.
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT1);
+
+    // Keep glColor3f working with lighting.
+    glEnable(GL_COLOR_MATERIAL);
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+
+    glShadeModel(GL_SMOOTH);
+
     // Keep texture colours unchanged when drawing textured surfaces.
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
     TextureManager::initialize();
 
 }
+
+// -----------------------------------------------------------------------------
+// Scene animation
+// -----------------------------------------------------------------------------
+
+void updateScene(int value)
+{
+    // Update the Ferris wheel rotation.
+    ferrisWheel.update();
+
+    glutPostRedisplay();
+
+    // About 60 updates per second.
+    glutTimerFunc(16, updateScene, 0);
+}
+
 
 
 // -----------------------------------------------------------------------------
@@ -2724,7 +2885,16 @@ void display()
     // Apply the player's current position and viewing direction.
     camera.applyView();
 
+    camera.applyView();
+
+    // Draw the sky without lighting.
+    glDisable(GL_LIGHTING);
     drawNightSky();
+    glEnable(GL_LIGHTING);
+
+    // Light positions are set after the camera view.
+    setupLighting();
+
     drawGround();
 
     drawCarnivalFence();
@@ -2732,6 +2902,13 @@ void display()
     drawCarnivalSign();
     drawHorrorTents();
     drawHauntedFunHouse();
+
+    // Broken Ferris wheel.
+    glPushMatrix();
+    glTranslatef(18.0f, 0.0f, -30.0f);
+    ferrisWheel.draw();
+    glPopMatrix();
+    
     drawEnvironmentProps();
 
     // Swap the completed back buffer to the screen.
@@ -2801,6 +2978,26 @@ void keyboard(unsigned char key, int x, int y)
     if (key == 'd' || key == 'D')
         camera.moveRight(moveSpeed);
 
+    // Q and E move the camera vertically.
+    if (key == 'q' || key == 'Q')
+        camera.moveUp(moveSpeed);
+
+    if (key == 'e' || key == 'E')
+        camera.moveUp(-moveSpeed);
+
+
+    // F starts or stops the Ferris wheel.
+    if (key == 'f' || key == 'F')
+        ferrisWheel.toggleRotation();
+
+    // + increases the Ferris wheel speed.
+    if (key == '+' || key == '=')
+        ferrisWheel.increaseSpeed();
+
+    // - decreases the Ferris wheel speed.
+    if (key == '-')
+        ferrisWheel.decreaseSpeed();
+
     // P switches between perspective and orthographic projections.
     if (key == 'p' || key == 'P')
     {
@@ -2860,6 +3057,9 @@ int main(int argc, char** argv)
     glutReshapeFunc(reshape);
     glutKeyboardFunc(keyboard);
     glutSpecialFunc(specialKeyboard);
+
+    // Start scene animation.
+    glutTimerFunc(16, updateScene, 0);
 
     glutMainLoop();
 

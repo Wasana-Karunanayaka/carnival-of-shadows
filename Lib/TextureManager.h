@@ -22,6 +22,7 @@ public:
     static GLuint stoneTexture;
     static GLuint redClothTexture;
     static GLuint dirtyClothTexture;
+    static GLuint rustyMetalTexture;
 
 private:
     static GLuint loadTexture(const char* filePath);

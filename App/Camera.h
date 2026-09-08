@@ -24,6 +24,9 @@ public:
     // Positive distance moves right; negative distance moves left.
     void moveRight(float distance);
 
+	// Positive distance moves up; negative distance moves down.
+    void moveUp(float distance);
+
     // Changes the horizontal viewing direction.
     void rotateYaw(float angle);
 
