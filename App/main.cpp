@@ -16,6 +16,7 @@
 #include <GL/glut.h>
 
 #include "../Lib/Primitives.h"
+#include "../Lib/HauntedTree.h"
 #include "Camera.h"
 
 #include <cmath>
@@ -1571,6 +1572,1097 @@ void drawHauntedFunHouse()
 
 
 // -----------------------------------------------------------------------------
+// Tree branch
+// -----------------------------------------------------------------------------
+
+void drawTreeBranch(float length, float radius, float rotateZ, float rotateX)
+{
+    glPushMatrix();
+
+    glRotatef(rotateZ, 0.0f, 0.0f, 1.0f);
+    glRotatef(rotateX, 1.0f, 0.0f, 0.0f);
+
+    glColor3f(0.09f, 0.04f, 0.018f);
+    Primitives::drawCylinder(radius, length, 9);
+
+    glPopMatrix();
+}
+
+
+// -----------------------------------------------------------------------------
+// Dead tree
+// -----------------------------------------------------------------------------
+
+void drawDeadTree()
+{
+    // Wide roots around the trunk.
+    for (int i = 0; i < 5; i++)
+    {
+        glPushMatrix();
+
+        float angle = i * 72.0f;
+
+        glRotatef(angle, 0.0f, 1.0f, 0.0f);
+        glTranslatef(0.0f, 0.10f, 0.65f);
+        glRotatef(-12.0f, 1.0f, 0.0f, 0.0f);
+        glScalef(0.18f, 0.16f, 1.5f);
+
+        glColor3f(0.075f, 0.032f, 0.015f);
+        Primitives::drawCube(1.0f);
+
+        glPopMatrix();
+    }
+
+
+    // Lower trunk.
+    glPushMatrix();
+    glRotatef(-4.0f, 0.0f, 0.0f, 1.0f);
+
+    glColor3f(0.105f, 0.045f, 0.018f);
+    Primitives::drawCylinder(0.38f, 2.3f, 10);
+
+    glPopMatrix();
+
+
+    // Upper trunk bends slightly.
+    glPushMatrix();
+    glTranslatef(-0.16f, 2.15f, 0.0f);
+    glRotatef(8.0f, 0.0f, 0.0f, 1.0f);
+
+    glColor3f(0.095f, 0.038f, 0.016f);
+    Primitives::drawCylinder(0.27f, 2.6f, 9);
+
+
+    // Long left branch.
+    glPushMatrix();
+    glTranslatef(0.0f, 1.35f, 0.0f);
+
+    drawTreeBranch(2.0f, 0.16f, 58.0f, -12.0f);
+
+    glPushMatrix();
+    glTranslatef(-1.65f, 1.05f, 0.15f);
+    drawTreeBranch(1.15f, 0.09f, 35.0f, 20.0f);
+    glPopMatrix();
+
+    glPopMatrix();
+
+
+    // Long right branch.
+    glPushMatrix();
+    glTranslatef(0.0f, 1.7f, 0.0f);
+
+    drawTreeBranch(1.8f, 0.14f, -52.0f, 18.0f);
+
+    glPushMatrix();
+    glTranslatef(1.4f, 1.05f, -0.2f);
+    drawTreeBranch(1.0f, 0.08f, -30.0f, -25.0f);
+    glPopMatrix();
+
+    glPopMatrix();
+
+
+    // Broken upper branch.
+    glPushMatrix();
+    glTranslatef(0.0f, 2.25f, 0.0f);
+    drawTreeBranch(1.1f, 0.11f, 22.0f, 8.0f);
+    glPopMatrix();
+
+
+    glPopMatrix();
+}
+
+
+// -----------------------------------------------------------------------------
+// Old carnival bench
+// -----------------------------------------------------------------------------
+
+void drawBench()
+{
+    // Seat planks.
+    for (int i = -1; i <= 1; i++)
+    {
+        glPushMatrix();
+        glTranslatef(0.0f, 0.78f, i * 0.25f);
+        glScalef(3.2f, 0.13f, 0.20f);
+
+        glColor3f(0.18f + i * 0.01f, 0.065f, 0.025f);
+        Primitives::drawCube(1.0f);
+
+        glPopMatrix();
+    }
+
+
+    // Back planks.
+    for (int i = 0; i < 3; i++)
+    {
+        glPushMatrix();
+
+        glTranslatef(0.0f, 1.15f + i * 0.30f, -0.42f);
+        glRotatef(-8.0f, 1.0f, 0.0f, 0.0f);
+        glScalef(3.2f, 0.16f, 0.12f);
+
+        glColor3f(0.16f, 0.055f, 0.022f);
+        Primitives::drawCube(1.0f);
+
+        glPopMatrix();
+    }
+
+
+    // Metal legs.
+    for (int i = -1; i <= 1; i += 2)
+    {
+        glPushMatrix();
+        glTranslatef(i * 1.15f, 0.0f, -0.25f);
+
+        glColor3f(0.07f, 0.065f, 0.06f);
+        Primitives::drawCylinder(0.09f, 0.76f, 8);
+
+        glPopMatrix();
+
+
+        glPushMatrix();
+        glTranslatef(i * 1.15f, 0.0f, 0.25f);
+
+        glColor3f(0.07f, 0.065f, 0.06f);
+        Primitives::drawCylinder(0.09f, 0.76f, 8);
+
+        glPopMatrix();
+    }
+
+
+    // Broken arm rests.
+    glPushMatrix();
+    glTranslatef(-1.55f, 1.0f, 0.0f);
+    glRotatef(-8.0f, 0.0f, 0.0f, 1.0f);
+    glScalef(0.12f, 0.65f, 0.75f);
+
+    glColor3f(0.10f, 0.045f, 0.02f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    glPushMatrix();
+    glTranslatef(1.55f, 0.93f, 0.0f);
+    glRotatef(5.0f, 0.0f, 0.0f, 1.0f);
+    glScalef(0.12f, 0.52f, 0.75f);
+
+    glColor3f(0.10f, 0.045f, 0.02f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+}
+
+
+// -----------------------------------------------------------------------------
+// Haunted lamp post
+// -----------------------------------------------------------------------------
+
+void drawLampPost()
+{
+    // Heavy base.
+    glPushMatrix();
+    glTranslatef(0.0f, 0.15f, 0.0f);
+    glScalef(0.75f, 0.30f, 0.75f);
+
+    glColor3f(0.065f, 0.06f, 0.055f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    glPushMatrix();
+    glTranslatef(0.0f, 0.3f, 0.0f);
+
+    glColor3f(0.08f, 0.075f, 0.07f);
+    Primitives::drawCylinder(0.22f, 0.55f, 12);
+
+    glPopMatrix();
+
+
+    // Main pole.
+    glPushMatrix();
+    glTranslatef(0.0f, 0.65f, 0.0f);
+
+    glColor3f(0.065f, 0.06f, 0.058f);
+    Primitives::drawCylinder(0.10f, 3.7f, 12);
+
+    glPopMatrix();
+
+
+    // Decorative ring.
+    glPushMatrix();
+    glTranslatef(0.0f, 3.85f, 0.0f);
+    glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+
+    glColor3f(0.10f, 0.085f, 0.07f);
+    glutSolidTorus(0.05f, 0.18f, 8, 16);
+
+    glPopMatrix();
+
+
+    // Crooked arm.
+    glPushMatrix();
+    glTranslatef(0.45f, 4.15f, 0.0f);
+    glRotatef(-10.0f, 0.0f, 0.0f, 1.0f);
+    glScalef(1.15f, 0.10f, 0.10f);
+
+    glColor3f(0.065f, 0.06f, 0.055f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // Lantern bottom.
+    glPushMatrix();
+    glTranslatef(1.0f, 3.72f, 0.0f);
+    glScalef(0.65f, 0.10f, 0.65f);
+
+    glColor3f(0.075f, 0.065f, 0.055f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // Lantern frame.
+    const float lanternX[4] = { -0.25f, 0.25f, -0.25f, 0.25f };
+    const float lanternZ[4] = { -0.25f, -0.25f, 0.25f, 0.25f };
+
+    for (int i = 0; i < 4; i++)
+    {
+        glPushMatrix();
+
+        glTranslatef(1.0f + lanternX[i], 3.75f, lanternZ[i]);
+
+        glColor3f(0.08f, 0.07f, 0.06f);
+        Primitives::drawCylinder(0.025f, 0.75f, 6);
+
+        glPopMatrix();
+    }
+
+
+    // Warm bulb.
+    glPushMatrix();
+    glTranslatef(1.0f, 4.05f, 0.0f);
+
+    glColor3f(0.90f, 0.48f, 0.10f);
+    Primitives::drawSphere(0.22f, 12, 10);
+
+    glPopMatrix();
+
+
+    // Lantern roof.
+    glPushMatrix();
+    glTranslatef(1.0f, 4.50f, 0.0f);
+
+    glColor3f(0.07f, 0.06f, 0.055f);
+    Primitives::drawCone(0.48f, 0.5f, 4);
+
+    glPopMatrix();
+}
+
+
+// -----------------------------------------------------------------------------
+// Old gravestone
+// -----------------------------------------------------------------------------
+
+void drawGravestone()
+{
+    glPushMatrix();
+    glTranslatef(0.0f, 0.12f, 0.0f);
+    glScalef(1.10f, 0.24f, 0.65f);
+
+    glColor3f(0.19f, 0.19f, 0.19f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // Main stone.
+    glPushMatrix();
+    glTranslatef(0.0f, 0.95f, 0.0f);
+    glRotatef(-5.0f, 0.0f, 0.0f, 1.0f);
+    glScalef(0.85f, 1.55f, 0.32f);
+
+    glColor3f(0.23f, 0.23f, 0.22f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // Rounded top.
+    glPushMatrix();
+    glTranslatef(-0.06f, 1.72f, 0.0f);
+    glScalef(0.46f, 0.44f, 0.21f);
+
+    glColor3f(0.23f, 0.23f, 0.22f);
+    Primitives::drawSphere(1.0f, 14, 10);
+
+    glPopMatrix();
+
+
+    // Small engraved cross.
+    glPushMatrix();
+    glTranslatef(-0.06f, 1.12f, 0.18f);
+    glScalef(0.09f, 0.55f, 0.05f);
+
+    glColor3f(0.12f, 0.12f, 0.11f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    glPushMatrix();
+    glTranslatef(-0.06f, 1.22f, 0.18f);
+    glScalef(0.40f, 0.08f, 0.05f);
+
+    glColor3f(0.12f, 0.12f, 0.11f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+}
+
+
+// -----------------------------------------------------------------------------
+// Cross gravestone
+// -----------------------------------------------------------------------------
+
+void drawCrossGravestone()
+{
+    glPushMatrix();
+    glTranslatef(0.0f, 0.15f, 0.0f);
+    glScalef(1.2f, 0.30f, 0.7f);
+
+    glColor3f(0.20f, 0.20f, 0.19f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    glPushMatrix();
+    glTranslatef(0.0f, 1.15f, 0.0f);
+    glScalef(0.38f, 2.0f, 0.32f);
+
+    glColor3f(0.24f, 0.24f, 0.23f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    glPushMatrix();
+    glTranslatef(0.0f, 1.55f, 0.0f);
+    glScalef(1.3f, 0.34f, 0.32f);
+
+    glColor3f(0.24f, 0.24f, 0.23f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+}
+
+
+// -----------------------------------------------------------------------------
+// Pumpkin
+// -----------------------------------------------------------------------------
+
+void drawPumpkin()
+{
+    // Overlapping sections make the pumpkin less spherical.
+    for (int i = 0; i < 6; i++)
+    {
+        float angle = i * 60.0f;
+
+        glPushMatrix();
+
+        glTranslatef(0.0f, 0.45f, 0.0f);
+        glRotatef(angle, 0.0f, 1.0f, 0.0f);
+        glScalef(0.68f, 0.52f, 0.48f);
+
+        glColor3f(0.53f, 0.16f, 0.018f);
+        Primitives::drawSphere(1.0f, 12, 10);
+
+        glPopMatrix();
+    }
+
+
+    // Stem.
+    glPushMatrix();
+    glTranslatef(0.0f, 0.91f, 0.0f);
+    glRotatef(-12.0f, 0.0f, 0.0f, 1.0f);
+
+    glColor3f(0.09f, 0.12f, 0.035f);
+    Primitives::drawCylinder(0.07f, 0.32f, 7);
+
+    glPopMatrix();
+
+
+    // Dark carved eyes.
+    glColor3f(0.03f, 0.012f, 0.005f);
+
+    glBegin(GL_TRIANGLES);
+
+    glVertex3f(-0.35f, 0.58f, 0.53f);
+    glVertex3f(-0.08f, 0.60f, 0.53f);
+    glVertex3f(-0.20f, 0.36f, 0.54f);
+
+    glVertex3f(0.08f, 0.60f, 0.53f);
+    glVertex3f(0.35f, 0.58f, 0.53f);
+    glVertex3f(0.20f, 0.36f, 0.54f);
+
+    glEnd();
+}
+
+
+// -----------------------------------------------------------------------------
+// Skull
+// -----------------------------------------------------------------------------
+
+void drawSkull()
+{
+    // Cranium.
+    glPushMatrix();
+    glTranslatef(0.0f, 0.65f, 0.0f);
+    glScalef(0.55f, 0.65f, 0.50f);
+
+    glColor3f(0.63f, 0.60f, 0.49f);
+    Primitives::drawSphere(1.0f, 18, 14);
+
+    glPopMatrix();
+
+
+    // Jaw.
+    glPushMatrix();
+    glTranslatef(0.0f, 0.24f, 0.08f);
+    glScalef(0.65f, 0.32f, 0.46f);
+
+    glColor3f(0.56f, 0.53f, 0.44f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // Eye sockets.
+    for (int i = -1; i <= 1; i += 2)
+    {
+        glPushMatrix();
+
+        glTranslatef(i * 0.22f, 0.68f, 0.44f);
+        glScalef(0.17f, 0.22f, 0.10f);
+
+        glColor3f(0.018f, 0.012f, 0.008f);
+        Primitives::drawSphere(1.0f, 10, 8);
+
+        glPopMatrix();
+    }
+
+
+    // Nose hole.
+    glPushMatrix();
+    glTranslatef(0.0f, 0.49f, 0.48f);
+    glScalef(0.10f, 0.13f, 0.06f);
+
+    glColor3f(0.02f, 0.012f, 0.008f);
+    Primitives::drawSphere(1.0f, 8, 6);
+
+    glPopMatrix();
+
+
+    // Teeth.
+    for (int i = -2; i <= 2; i++)
+    {
+        glPushMatrix();
+
+        glTranslatef(i * 0.10f, 0.30f, 0.33f);
+        glScalef(0.07f, 0.17f, 0.05f);
+
+        glColor3f(0.68f, 0.65f, 0.53f);
+        Primitives::drawCube(1.0f);
+
+        glPopMatrix();
+    }
+}
+
+
+// -----------------------------------------------------------------------------
+// Bone
+// -----------------------------------------------------------------------------
+
+void drawBone()
+{
+    glPushMatrix();
+    glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+
+    glColor3f(0.58f, 0.55f, 0.46f);
+    Primitives::drawCylinder(0.07f, 0.9f, 8);
+
+    glPopMatrix();
+
+
+    for (int i = -1; i <= 1; i += 2)
+    {
+        glPushMatrix();
+        glTranslatef(i * 0.45f, 0.0f, 0.0f);
+
+        glColor3f(0.60f, 0.57f, 0.48f);
+        Primitives::drawSphere(0.13f, 8, 6);
+
+        glPopMatrix();
+    }
+}
+
+
+// -----------------------------------------------------------------------------
+// Dirty wooden crate
+// -----------------------------------------------------------------------------
+
+void drawCrate()
+{
+    // Main box.
+    glPushMatrix();
+    glTranslatef(0.0f, 0.65f, 0.0f);
+    glScalef(1.3f, 1.3f, 1.3f);
+
+    glColor3f(0.17f, 0.075f, 0.025f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // Front slats.
+    for (int i = -1; i <= 1; i++)
+    {
+        glPushMatrix();
+        glTranslatef(i * 0.43f, 0.65f, 0.67f);
+        glScalef(0.10f, 1.20f, 0.08f);
+
+        glColor3f(0.27f, 0.12f, 0.035f);
+        Primitives::drawCube(1.0f);
+
+        glPopMatrix();
+    }
+
+
+    // Crossed boards.
+    glPushMatrix();
+    glTranslatef(0.0f, 0.65f, 0.72f);
+    glRotatef(42.0f, 0.0f, 0.0f, 1.0f);
+    glScalef(0.10f, 1.55f, 0.08f);
+
+    glColor3f(0.24f, 0.10f, 0.03f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    glPushMatrix();
+    glTranslatef(0.0f, 0.65f, 0.73f);
+    glRotatef(-42.0f, 0.0f, 0.0f, 1.0f);
+    glScalef(0.10f, 1.55f, 0.08f);
+
+    glColor3f(0.22f, 0.09f, 0.028f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+
+
+    // Loose broken lid.
+    glPushMatrix();
+    glTranslatef(0.25f, 1.45f, -0.05f);
+    glRotatef(-15.0f, 0.0f, 0.0f, 1.0f);
+    glRotatef(12.0f, 1.0f, 0.0f, 0.0f);
+    glScalef(1.1f, 0.10f, 1.2f);
+
+    glColor3f(0.20f, 0.08f, 0.025f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+}
+
+
+// -----------------------------------------------------------------------------
+// Old barrel
+// -----------------------------------------------------------------------------
+
+void drawBarrel()
+{
+    // Wooden body.
+    glPushMatrix();
+
+    glColor3f(0.20f, 0.085f, 0.028f);
+    Primitives::drawCylinder(0.55f, 1.35f, 14);
+
+    glPopMatrix();
+
+
+    // Metal rings.
+    const float ringHeights[3] = { 0.18f, 0.67f, 1.16f };
+
+    for (int i = 0; i < 3; i++)
+    {
+        glPushMatrix();
+
+        glTranslatef(0.0f, ringHeights[i], 0.0f);
+        glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+
+        glColor3f(0.075f, 0.07f, 0.065f);
+        glutSolidTorus(0.045f, 0.55f, 8, 16);
+
+        glPopMatrix();
+    }
+}
+
+
+// -----------------------------------------------------------------------------
+// Grass clump
+// -----------------------------------------------------------------------------
+
+void drawGrassClump()
+{
+    glColor3f(0.08f, 0.12f, 0.055f);
+
+    glBegin(GL_TRIANGLES);
+
+    glVertex3f(-0.25f, 0.0f, 0.0f);
+    glVertex3f(-0.05f, 0.0f, 0.0f);
+    glVertex3f(-0.13f, 0.85f, 0.0f);
+
+    glVertex3f(0.0f, 0.0f, 0.05f);
+    glVertex3f(0.18f, 0.0f, 0.05f);
+    glVertex3f(0.08f, 0.65f, 0.05f);
+
+    glVertex3f(-0.08f, 0.0f, -0.15f);
+    glVertex3f(0.08f, 0.0f, -0.15f);
+    glVertex3f(0.02f, 0.72f, -0.15f);
+
+    glEnd();
+}
+
+
+// -----------------------------------------------------------------------------
+// Blood stain
+// -----------------------------------------------------------------------------
+
+void drawBloodStain(float size)
+{
+    // Slightly above the ground.
+    glColor3f(0.20f, 0.008f, 0.006f);
+
+    glBegin(GL_POLYGON);
+
+    glVertex3f(-1.0f * size, 0.025f, -0.25f * size);
+    glVertex3f(-0.55f * size, 0.025f, -0.80f * size);
+    glVertex3f(0.10f * size, 0.025f, -0.65f * size);
+    glVertex3f(0.75f * size, 0.025f, -0.90f * size);
+    glVertex3f(1.05f * size, 0.025f, -0.20f * size);
+    glVertex3f(0.65f * size, 0.025f, 0.50f * size);
+    glVertex3f(0.05f * size, 0.025f, 0.80f * size);
+    glVertex3f(-0.70f * size, 0.025f, 0.45f * size);
+
+    glEnd();
+
+
+    // Small drops beside the main stain.
+    glPointSize(5.0f);
+
+    glBegin(GL_POINTS);
+
+    glVertex3f(1.3f * size, 0.027f, 0.15f * size);
+    glVertex3f(1.55f * size, 0.027f, 0.35f * size);
+    glVertex3f(-1.25f * size, 0.027f, -0.65f * size);
+
+    glEnd();
+
+    glPointSize(1.0f);
+}
+
+
+// -----------------------------------------------------------------------------
+// Water puddle
+// -----------------------------------------------------------------------------
+
+void drawWaterPuddle(float size)
+{
+    glColor3f(0.035f, 0.055f, 0.065f);
+
+    glBegin(GL_POLYGON);
+
+    glVertex3f(-1.2f * size, 0.02f, -0.3f * size);
+    glVertex3f(-0.8f * size, 0.02f, -0.8f * size);
+    glVertex3f(-0.1f * size, 0.02f, -0.65f * size);
+    glVertex3f(0.8f * size, 0.02f, -0.9f * size);
+    glVertex3f(1.25f * size, 0.02f, -0.2f * size);
+    glVertex3f(0.7f * size, 0.02f, 0.55f * size);
+    glVertex3f(-0.25f * size, 0.02f, 0.75f * size);
+    glVertex3f(-0.9f * size, 0.02f, 0.45f * size);
+
+    glEnd();
+}
+
+
+// -----------------------------------------------------------------------------
+// Broken wooden plank
+// -----------------------------------------------------------------------------
+
+void drawBrokenPlank()
+{
+    glPushMatrix();
+    glScalef(1.8f, 0.12f, 0.32f);
+
+    glColor3f(0.14f, 0.055f, 0.018f);
+    Primitives::drawCube(1.0f);
+
+    glPopMatrix();
+}
+
+
+// -----------------------------------------------------------------------------
+// Environment props
+// -----------------------------------------------------------------------------
+
+void drawEnvironmentProps()
+{
+    // -------------------------------------------------------------------------
+    // Dead trees
+    // -------------------------------------------------------------------------
+
+    const float treePositions[10][3] =
+    {
+        {-9.0f, 0.0f,  2.0f},
+        {10.0f, 0.0f,  1.5f},
+        {-14.0f, 0.0f, -21.0f},
+        {14.0f, 0.0f, -21.5f},
+        {-34.0f, 0.0f, -21.0f},
+        {-33.0f, 0.0f, -33.0f},
+        {18.0f, 0.0f, -28.0f},
+        {21.0f, 0.0f, -2.0f},
+        {-17.0f, 0.0f, 2.0f},
+        {31.0f, 0.0f, -25.0f}
+    };
+
+    for (int i = 0; i < 10; i++)
+    {
+        glPushMatrix();
+
+        glTranslatef(treePositions[i][0], 0.0f, treePositions[i][2]);
+        glRotatef(i * 31.0f, 0.0f, 1.0f, 0.0f);
+
+        float scale = 0.85f + (i % 3) * 0.15f;
+        glScalef(scale, scale, scale);
+
+        HauntedTree::draw(static_cast<float>(i));
+
+        glPopMatrix();
+    }
+
+
+    // -------------------------------------------------------------------------
+    // Benches
+    // -------------------------------------------------------------------------
+
+    glPushMatrix();
+    glTranslatef(-9.0f, 0.0f, -6.7f);
+    glRotatef(18.0f, 0.0f, 1.0f, 0.0f);
+    drawBench();
+    glPopMatrix();
+
+
+    glPushMatrix();
+    glTranslatef(9.0f, 0.0f, -18.2f);
+    glRotatef(195.0f, 0.0f, 1.0f, 0.0f);
+    drawBench();
+    glPopMatrix();
+
+
+    // -------------------------------------------------------------------------
+    // Lamp posts
+    // -------------------------------------------------------------------------
+
+    const float lampPositions[8][3] =
+    {
+        {-4.5f, 0.0f,  1.0f},
+        { 4.5f, 0.0f,  1.0f},
+        {-8.5f, 0.0f, -7.0f},
+        { 8.5f, 0.0f, -7.0f},
+        {-8.5f, 0.0f, -18.0f},
+        { 8.5f, 0.0f, -18.0f},
+        {-5.0f, 0.0f, -25.0f},
+        { 5.0f, 0.0f, -25.0f}
+    };
+
+    for (int i = 0; i < 8; i++)
+    {
+        glPushMatrix();
+
+        glTranslatef(lampPositions[i][0], 0.0f, lampPositions[i][2]);
+
+        if (i % 2 == 1)
+            glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
+
+        drawLampPost();
+
+        glPopMatrix();
+    }
+
+
+    // -------------------------------------------------------------------------
+    // Graveyard corner
+    // -------------------------------------------------------------------------
+
+    const float gravePositions[7][3] =
+    {
+        {14.5f, 0.0f, -3.0f},
+        {16.5f, 0.0f, -5.0f},
+        {18.5f, 0.0f, -3.8f},
+        {14.3f, 0.0f, -7.0f},
+        {17.2f, 0.0f, -8.0f},
+        {20.0f, 0.0f, -7.2f},
+        {20.5f, 0.0f, -4.5f}
+    };
+
+    for (int i = 0; i < 7; i++)
+    {
+        glPushMatrix();
+
+        glTranslatef(gravePositions[i][0], 0.0f, gravePositions[i][2]);
+        glRotatef((i - 3) * 6.0f, 0.0f, 0.0f, 1.0f);
+
+        if (i == 1 || i == 5)
+            drawCrossGravestone();
+        else
+            drawGravestone();
+
+        glPopMatrix();
+    }
+
+
+    // -------------------------------------------------------------------------
+    // Crates
+    // -------------------------------------------------------------------------
+
+    const float cratePositions[5][3] =
+    {
+        {-12.5f, 0.0f, -3.0f},
+        {-30.5f, 0.0f, -8.0f},
+        {12.8f, 0.0f, -22.0f},
+        {29.0f, 0.0f, -5.0f},
+        {-9.5f, 0.0f, -22.0f}
+    };
+
+    for (int i = 0; i < 5; i++)
+    {
+        glPushMatrix();
+
+        glTranslatef(cratePositions[i][0], 0.0f, cratePositions[i][2]);
+        glRotatef(i * 19.0f, 0.0f, 1.0f, 0.0f);
+
+        drawCrate();
+
+        glPopMatrix();
+    }
+
+
+    // -------------------------------------------------------------------------
+    // Barrels
+    // -------------------------------------------------------------------------
+
+    const float barrelPositions[4][3] =
+    {
+        {-13.8f, 0.0f, -2.5f},
+        {-29.5f, 0.0f, -7.0f},
+        {13.8f, 0.0f, -23.2f},
+        {30.0f, 0.0f, -6.2f}
+    };
+
+    for (int i = 0; i < 4; i++)
+    {
+        glPushMatrix();
+
+        glTranslatef(barrelPositions[i][0], 0.0f, barrelPositions[i][2]);
+
+        drawBarrel();
+
+        glPopMatrix();
+    }
+
+
+    // -------------------------------------------------------------------------
+    // Pumpkins
+    // -------------------------------------------------------------------------
+
+    const float pumpkinPositions[8][3] =
+    {
+        {-5.7f, 0.0f, 3.8f},
+        { 5.4f, 0.0f, 3.7f},
+        {13.3f, 0.0f, -3.8f},
+        {18.0f, 0.0f, -8.5f},
+        {-12.0f, 0.0f, -18.5f},
+        {-31.0f, 0.0f, -17.0f},
+        {11.7f, 0.0f, -19.0f},
+        {21.5f, 0.0f, -9.0f}
+    };
+
+    for (int i = 0; i < 8; i++)
+    {
+        glPushMatrix();
+
+        glTranslatef(pumpkinPositions[i][0], 0.0f, pumpkinPositions[i][2]);
+
+        float scale = 0.75f + (i % 3) * 0.12f;
+        glScalef(scale, scale, scale);
+
+        drawPumpkin();
+
+        glPopMatrix();
+    }
+
+
+    // -------------------------------------------------------------------------
+    // Skulls and bones
+    // -------------------------------------------------------------------------
+
+    glPushMatrix();
+    glTranslatef(15.8f, 0.0f, -6.0f);
+    glRotatef(-18.0f, 0.0f, 1.0f, 0.0f);
+    drawSkull();
+    glPopMatrix();
+
+
+    glPushMatrix();
+    glTranslatef(-11.0f, 0.0f, -19.0f);
+    glRotatef(24.0f, 0.0f, 1.0f, 0.0f);
+    drawSkull();
+    glPopMatrix();
+
+
+    glPushMatrix();
+    glTranslatef(17.0f, 0.12f, -6.2f);
+    glRotatef(25.0f, 0.0f, 1.0f, 0.0f);
+    drawBone();
+    glPopMatrix();
+
+
+    glPushMatrix();
+    glTranslatef(17.5f, 0.12f, -6.6f);
+    glRotatef(-32.0f, 0.0f, 1.0f, 0.0f);
+    drawBone();
+    glPopMatrix();
+
+
+    // -------------------------------------------------------------------------
+    // Blood stains
+    // -------------------------------------------------------------------------
+
+    glPushMatrix();
+    glTranslatef(10.0f, 0.0f, -15.8f);
+    drawBloodStain(0.85f);
+    glPopMatrix();
+
+
+    glPushMatrix();
+    glTranslatef(24.0f, 0.0f, -12.5f);
+    drawBloodStain(0.65f);
+    glPopMatrix();
+
+
+    glPushMatrix();
+    glTranslatef(-17.0f, 0.0f, -12.0f);
+    drawBloodStain(0.50f);
+    glPopMatrix();
+
+
+    // -------------------------------------------------------------------------
+    // Water puddles
+    // -------------------------------------------------------------------------
+
+    glPushMatrix();
+    glTranslatef(-6.5f, 0.0f, -3.5f);
+    drawWaterPuddle(1.1f);
+    glPopMatrix();
+
+
+    glPushMatrix();
+    glTranslatef(7.2f, 0.0f, -21.5f);
+    drawWaterPuddle(0.8f);
+    glPopMatrix();
+
+
+    glPushMatrix();
+    glTranslatef(-20.0f, 0.0f, -6.0f);
+    drawWaterPuddle(0.9f);
+    glPopMatrix();
+
+
+    // -------------------------------------------------------------------------
+    // Grass and weeds
+    // -------------------------------------------------------------------------
+
+    const float grassPositions[20][3] =
+    {
+        {-7.0f, 0.0f, 4.0f},
+        {-9.0f, 0.0f, 3.5f},
+        { 8.0f, 0.0f, 4.0f},
+        {11.0f, 0.0f, 3.0f},
+        {-13.0f, 0.0f, -3.0f},
+        {13.0f, 0.0f, -2.0f},
+        {-14.0f, 0.0f, -7.0f},
+        {14.0f, 0.0f, -9.0f},
+        {-14.0f, 0.0f, -18.0f},
+        {14.0f, 0.0f, -18.0f},
+        {-18.0f, 0.0f, -21.0f},
+        {18.0f, 0.0f, -22.0f},
+        {-25.0f, 0.0f, -4.0f},
+        {-29.0f, 0.0f, -5.0f},
+        {24.0f, 0.0f, -4.0f},
+        {29.0f, 0.0f, -8.0f},
+        {-8.0f, 0.0f, -29.0f},
+        { 8.0f, 0.0f, -29.0f},
+        {-12.0f, 0.0f, -31.0f},
+        {12.0f, 0.0f, -31.0f}
+    };
+
+    for (int i = 0; i < 20; i++)
+    {
+        glPushMatrix();
+
+        glTranslatef(grassPositions[i][0], 0.02f, grassPositions[i][2]);
+        glRotatef(i * 37.0f, 0.0f, 1.0f, 0.0f);
+
+        drawGrassClump();
+
+        glPopMatrix();
+    }
+
+
+    // -------------------------------------------------------------------------
+    // Broken planks and rubbish
+    // -------------------------------------------------------------------------
+
+    const float plankPositions[7][3] =
+    {
+        {-7.5f, 0.0f, -4.0f},
+        {11.5f, 0.0f, -3.0f},
+        {-14.5f, 0.0f, -17.0f},
+        {15.0f, 0.0f, -20.0f},
+        {-28.0f, 0.0f, -8.5f},
+        {28.0f, 0.0f, -8.0f},
+        {-8.0f, 0.0f, -24.0f}
+    };
+
+    for (int i = 0; i < 7; i++)
+    {
+        glPushMatrix();
+
+        glTranslatef(plankPositions[i][0], 0.10f, plankPositions[i][2]);
+        glRotatef(i * 29.0f, 0.0f, 1.0f, 0.0f);
+        glRotatef((i % 2) * 8.0f, 0.0f, 0.0f, 1.0f);
+
+        drawBrokenPlank();
+
+        glPopMatrix();
+    }
+}
+
+
+// -----------------------------------------------------------------------------
 // Initialization
 // -----------------------------------------------------------------------------
 
@@ -1606,6 +2698,7 @@ void display()
     drawCarnivalSign();
     drawHorrorTents();
     drawHauntedFunHouse();
+    drawEnvironmentProps();
 
     // Swap the completed back buffer to the screen.
     glutSwapBuffers();
